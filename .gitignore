@@ -1,0 +1,15 @@
+# package and virtual environments(venv)
+/bin
+/include
+/lib
+.env
+pyvenv.cfg
+
+# vscode setting
+/.vscode
+
+# log file
+*.log
+
+# cache file
+*.pyc
