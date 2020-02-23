@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Date, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import datetime
 
 Base = declarative_base()
 
@@ -23,6 +24,8 @@ class Company(Base):
     foundation_date = Column(DateTime, comment='設立日(月)')
     longitude = Column(Float, comment='本社所在地(経度)')
     latitude = Column(Float, comment='本社所在地(緯度)')
+    ins_ts = Column(DateTime, default=datetime.datetime.now())
+    upd_ts = Column(DateTime, default=datetime.datetime.now())
 
     # 外部キー制約
     company = relationship('StockPrice')
@@ -46,3 +49,5 @@ class StockPrice(Base):
     low_price = Column(Float, comment='株価(安値)')
     close_price = Column(Float, comment='株価(終値)')
     volume = Column(Float, comment='出来高')
+    ins_ts = Column(DateTime, default=datetime.datetime.now())
+    upd_ts = Column(DateTime, default=datetime.datetime.now())

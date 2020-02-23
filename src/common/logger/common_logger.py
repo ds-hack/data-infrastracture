@@ -14,7 +14,7 @@ class CommonLogger(object):
         self,
         log_dir: str,
         mod_name: str,
-        log_level: str,
+        log_level: str = 'INFO',
     ):
         """
         アプリケーションで使用するロガークラス
@@ -42,7 +42,7 @@ class CommonLogger(object):
         log_name = os.path.join(log_dir, log_name)
         fh = logging.FileHandler(log_name)
         # ログフォーマット
-        log_format = '%(asctime)s - %(name) - %(Levelname)s - %(message)s'
+        log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         formatter = logging.Formatter(log_format)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
@@ -78,11 +78,11 @@ class CommonLogger(object):
         log_name = f'sql_log_{date.today().strftime("%Y%m%d")}.log'
         log_name = os.path.join(log_dir, log_name)
         fh = logging.FileHandler(log_name)
-        # # ログフォーマット
-        # log_format = '%(asctime)s - %(name) - %(Levelname)s - %(message)s'
-        # formatter = logging.Formatter(log_format)
-        # fh.setFormatter(formatter)
         logger.addHandler(fh)
+        # ログフォーマット
+        log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        formatter = logging.Formatter(log_format)
+        fh.setFormatter(formatter)
         # ログレベルの設定
         logger.setLevel(log_level)
 

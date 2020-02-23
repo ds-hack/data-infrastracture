@@ -1,6 +1,7 @@
 import os
 import sys
 import pathlib
+from sqlalchemy.exc import ProgrammingError
 
 # srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(str(pathlib.Path(__file__).resolve().parent.parent))
@@ -19,11 +20,36 @@ if __name__ == '__main__':
         os.environ['POSTGRESQL_DB_NAME'],
     ).engine
 
-    sql_logger = CommonLogger().get_sql_logger(
-        './log/stock/sql',
-        'DEBUG',
+    # テスト用DBも併せて作成する
+    test_engine = BaseEngine(
+        os.environ['POSTGRESQL_USER'],
+        os.environ['POSTGRESQL_PASSWORD'],
+        os.environ['POSTGRESQL_HOST'],
+        os.environ['POSTGRESQL_PORT'],
+        os.environ['POSTGRESQL_TEST_DB_NAME'],
+    ).engine
+
+    logger = CommonLogger().get_application_logger(
+        os.path.join(os.environ['STOCK_APP_LOG_PATH'], 'app'),
+        __name__,
     )
 
     # DBに存在しない全てのテーブルを作成する
+    # 作成済のテーブルについてはスキップする
     # ALTER TABLEについては、DTOの修正とSQLで対応する
-    Base.metadata.create_all(bind=engine, checkfirst=False)
+    tables = [Company.__tablename__, StockPrice.__tablename__]
+    for tn in tables:
+        try:
+            Base.metadata.tables[tn].create(bind=engine, checkfirst=False)
+            logger.info(f'{tn} table created.')
+        except ProgrammingError:
+            logger.info(f'{tn} table is already exist. '
+                        f'Skip creating table.')
+
+        try:
+            Base.metadata.tables[tn].create(
+                bind=test_engine, checkfirst=False)
+            logger.info(f'{tn} table created on testdb.')
+        except ProgrammingError:
+            logger.info(f'{tn} table is already exist in testdb. '
+                        f'Skip creating table.')

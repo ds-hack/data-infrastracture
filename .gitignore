@@ -13,3 +13,6 @@ pyvenv.cfg
 
 # cache file
 *.pyc
+
+# DB dump file
+*.sql
