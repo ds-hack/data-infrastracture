@@ -2,50 +2,29 @@ import os
 import sys
 import pathlib
 import pytest
-import pandas as pd
+import datetime
+from sqlalchemy import func
 
 # srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
     str(pathlib.Path(__file__).resolve().parent.parent.parent), 'src'))
+from common.logger.common_logger import CommonLogger  # noqa: #402
 from common.db.common_dao import CommonDao  # noqa: #402
 from stock.dto.stock_dto import StockPrice  # noqa: #402
 
 
-@pytest.fixture(session='function')
-def stock_prices_test_data_001():
-    """
-    Resourcesフォルダからテスト用に事前にDBに格納するデータ
-
-    CSVからデータをロードし、DTOのリストとして変換する.\n
-    将来的に本番データを使ってsqldumpから事前にデータを準備することも検討に入れる.
-    """
-    csv_path = './test/resources/stock_prices_test_data_001.csv'
-    try:
-        test_data = pd.read_csv(csv_path, encoding='utf-8')
-    except UnicodeEncodeError:
-        test_data = pd.read_csv(csv_path, encoding='cp-932')
-
-    stock_prices = []
-    for idx in test_data.index:
-        stock_price = StockPrice()
-        stock_price.company_id = test_data.at[idx, 'company_id']
-        stock_price.date = test_data.at[idx, 'date']
-        stock_price.open_price = test_data.at[idx, 'open_price']
-        stock_price.high_price = test_data.at[idx, 'high_price']
-        stock_price.low_price = test_data.at[idx, 'low_price']
-        stock_price.close_price = test_data.at[idx, 'close_price']
-        stock_price.volume = stock_price.at[idx, 'volume']
-        stock_prices.append(stock_price)
-
-    return stock_prices
-
-
-@pytest.fixture(session='function', name='session_001')
-def db_with_test_data_001(testdb, stock_prices_test_data_001):
+@pytest.fixture(scope='function', name='session_001')
+def db_with_test_data_001(
+    testdb,
+    company_test_data_001,
+    stock_prices_test_data_001
+):
     """
     CommonDaoクラスのテストに使用するデータをDBに格納し、テストメソッド内で\n
     使用するためのセッションを返す
     """
+    # テストメソッド実行毎にrollback()とadd_all()が実行される
+    testdb.add_all(company_test_data_001)
     testdb.add_all(stock_prices_test_data_001)
     return testdb
 
@@ -55,8 +34,61 @@ class TestDelsert():
     全DELETE全INSERT処理を実施するdelsert()メソッドのテストクラス
     """
     @pytest.mark.smoke
-    def test_delsert_record_count(self, session_001):
-        pass
+    def test_delsert_record_count(
+        self,
+        session_001,
+        test_common_dao_delsert_data,
+    ):
+        """
+        全DELETE全INSERT処理を実施した後のレコード数が、想定通りであるか
+        """
+        logger = CommonLogger().get_test_logger(
+            os.environ['TEST_LOG_PATH'],
+            __name__,
+        )
+        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao.delsert(test_common_dao_delsert_data,
+                                ['company_id', 'date'])
+        record_count = session_001.query(
+            func.count(StockPrice.company_id)).scalar()
+
+        assert len(test_common_dao_delsert_data) == record_count
+
+    @pytest.mark.parametrize('company_id, date',
+                             [('0001JP', datetime.date(2020, 2, 24)),
+                              ('0002JP', datetime.date(2020, 2, 25)),
+                              ('0004JP', datetime.date(2020, 2, 29)),
+                              ])
+    @pytest.mark.smoke
+    def test_delsert_is_correct_data(
+        self,
+        session_001,
+        test_common_dao_delsert_data,
+        company_id,
+        date,
+    ):
+        """
+        全DELETE全INSERT処理を実施した後のレコードが、正しくDBに保持されているか
+
+        delsertメソッド内ではdtoに手を加えていないので保持されていることのみを確認する
+        """
+        logger = CommonLogger().get_test_logger(
+            os.environ['TEST_LOG_PATH'],
+            __name__,
+        )
+        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao.delsert(test_common_dao_delsert_data,
+                                ['company_id', 'date'])
+
+        record = \
+            session_001.query(
+                StockPrice
+            ).filter(
+                StockPrice.company_id == company_id,
+                StockPrice.date == date,
+            ).first()
+
+        assert record is not None
 
 
 class TestUpsert():
@@ -64,5 +96,102 @@ class TestUpsert():
     UPSERT処理を実施するupsert()メソッドのテストクラス
     """
     @pytest.mark.smoke
-    def test_upsert_record_count(self, session_001):
-        pass
+    def test_upsert_record_count(
+        self,
+        session_001,
+        test_common_dao_upsert_data,
+    ):
+        """
+        UPSERT処理を実施した後のレコード数が、想定通りであるか
+        """
+        logger = CommonLogger().get_test_logger(
+            os.environ['TEST_LOG_PATH'],
+            __name__,
+        )
+        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao.upsert(test_common_dao_upsert_data,
+                               ['company_id', 'date'])
+        record_count = session_001.query(
+            func.count(StockPrice.company_id)).scalar()
+
+        assert len(test_common_dao_upsert_data) == record_count
+
+    @pytest.mark.parametrize('company_id, date',
+                             [('0001JP', datetime.date(2020, 2, 29)),
+                              ('0004JP', datetime.date(2020, 2, 29)),
+                              ])
+    @pytest.mark.smoke
+    def test_upsert_is_correct_insert_data(
+        self,
+        session_001,
+        test_common_dao_upsert_data,
+        company_id,
+        date
+    ):
+        """
+        UPSERT処理を実施した後のINSERT対象のレコードが、正しくDBに保持されているか
+
+        upsertメソッド内ではdtoに手を加えていないので保持されていることのみを確認する
+        """
+        logger = CommonLogger().get_test_logger(
+            os.environ['TEST_LOG_PATH'],
+            __name__,
+        )
+        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao.upsert(test_common_dao_upsert_data,
+                               ['company_id', 'date'])
+
+        record = \
+            session_001.query(
+                StockPrice
+            ).filter(
+                StockPrice.company_id == company_id,
+                StockPrice.date == date,
+            ).first()
+
+        assert record is not None
+
+    @pytest.mark.parametrize('company_id, date',
+                             [('0001JP', datetime.date(2020, 2, 24)),
+                              ('0002JP', datetime.date(2020, 2, 25)),
+                              ('0003JP', datetime.date(2020, 2, 25)),
+                              ])
+    @pytest.mark.smoke
+    def test_upsert_is_correct_update_data(
+        self,
+        session_001,
+        test_common_dao_upsert_data,
+        company_id,
+        date,
+    ):
+        """
+        UPSERT処理を実施した後のUPDATE対象のレコードが、正しくDBに保持されているか
+
+        「ins_tsを書き換えていないこと」という観点が加わる
+        """
+        old_record = \
+            session_001.query(
+                StockPrice
+            ).filter(
+                StockPrice.company_id == company_id,
+                StockPrice.date == date,
+            ).first()
+
+        logger = CommonLogger().get_test_logger(
+            os.environ['TEST_LOG_PATH'],
+            __name__,
+        )
+        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao.upsert(test_common_dao_upsert_data,
+                               ['company_id', 'date'])
+
+        record = \
+            session_001.query(
+                StockPrice
+            ).filter(
+                StockPrice.company_id == company_id,
+                StockPrice.date == date,
+            ).first()
+
+        assert record is not None
+        assert old_record.ins_ts == record.ins_ts

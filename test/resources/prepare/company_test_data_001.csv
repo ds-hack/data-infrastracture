@@ -1,0 +1,5 @@
+company_id,company_name,stock_code,listed_market,foundation_date,longitude,latitude,ins_ts,upd_ts
+0001JP,dshack001,2000,東証一部,1989-08-15,150,100,"",""
+0002JP,dshack002,3000,東証二部,2000-02-15,-30,20,"",""
+0003JP,dshack003,4000,東証マザーズ,2010-08-15,100,-60,"",""
+0004JP,dshack004,5000,東証一部,2019-02-24,-120,-150,"",""

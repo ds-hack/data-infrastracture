@@ -30,7 +30,7 @@ if __name__ == '__main__':
     ).engine
 
     logger = CommonLogger().get_application_logger(
-        os.path.join(os.environ['STOCK_APP_LOG_PATH'], 'app'),
+        os.environ['APP_LOG_PATH'],
         __name__,
     )
 

@@ -55,5 +55,5 @@ class BaseEngine(object):
         session: sqlalchemy.Session
             SQL AlchemyでDBを操作するためのSessionクラス
         """
-        session = sessionmaker(bind=self.engine)
-        return session
+        Session = sessionmaker(bind=self.engine)
+        return Session()
