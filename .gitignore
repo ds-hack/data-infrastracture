@@ -1,3 +1,6 @@
+# Secret
+postgres-config.yaml
+
 # package and virtual environments(venv)
 /bin
 /include
