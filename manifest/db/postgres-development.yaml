@@ -1,0 +1,54 @@
+# Headlessサービスを利用してコンテナ内からPod名によるアクセスを行う
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-infra
+  name: postgres-development
+  labels:
+    app: postgres-development
+spec:
+  ports:
+  - port: 5432
+    name: postgres-development
+  clusterIP: None
+  selector:
+    app: postgres-development
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dshack-infra
+  name: postgres-development
+spec:
+  serviceName: postgres-development
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-development
+  template:
+    metadata:
+      labels:
+        app: postgres-development
+    spec:
+      containers:
+      - name: postgres-development
+        image: postgres:12.1
+        envFrom:
+        - secretRef:
+            name: postgres-development
+        ports:
+        - containerPort: 5432
+          name: postgresdb
+        volumeMounts:
+        - name: postgresdb
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+  volumeClaimTemplates:
+  - metadata:
+      name: postgresdb
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 1Gi

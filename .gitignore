@@ -1,5 +1,6 @@
 # Secret
-postgres-config.yaml
+dshack-infra-secret.yaml
+dshack-infra-config.yaml
 
 # package and virtual environments(venv)
 /bin
