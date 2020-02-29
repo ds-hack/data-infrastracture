@@ -13,20 +13,20 @@ from stock.dto.stock_dto import Base, Company, StockPrice  # noqa: #402
 if __name__ == '__main__':
     # 認証情報は環境変数から取得する (ref: forego run)
     engine = BaseEngine(
-        os.environ['POSTGRESQL_USER'],
-        os.environ['POSTGRESQL_PASSWORD'],
-        os.environ['POSTGRESQL_HOST'],
-        os.environ['POSTGRESQL_PORT'],
-        os.environ['POSTGRESQL_DB_NAME'],
+        os.environ['POSTGRES_USER'],
+        os.environ['POSTGRES_PASSWORD'],
+        os.environ['POSTGRES_HOST'],
+        os.environ['POSTGRES_PORT'],
+        os.environ['POSTGRES_DB'],
     ).engine
 
     # テスト用DBも併せて作成する
     test_engine = BaseEngine(
-        os.environ['POSTGRESQL_USER'],
-        os.environ['POSTGRESQL_PASSWORD'],
-        os.environ['POSTGRESQL_HOST'],
-        os.environ['POSTGRESQL_PORT'],
-        os.environ['POSTGRESQL_TEST_DB_NAME'],
+        os.environ['POSTGRES_TEST_USER'],
+        os.environ['POSTGRES_TEST_PASSWORD'],
+        os.environ['POSTGRES_TEST_HOST'],
+        os.environ['POSTGRES_TEST_PORT'],
+        os.environ['POSTGRES_TEST_DB'],
     ).engine
 
     logger = CommonLogger().get_application_logger(

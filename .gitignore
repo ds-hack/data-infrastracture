@@ -1,6 +1,5 @@
 # Secret
-dshack-infra-secret.yaml
-dshack-infra-config.yaml
+dshack-secret.yaml
 
 # package and virtual environments(venv)
 /bin
