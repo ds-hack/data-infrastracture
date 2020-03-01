@@ -17,6 +17,9 @@ pyvenv.cfg
 
 # cache file
 *.pyc
+.coverage
+__pycache__/
+.pytest_cache/
 
 # DB dump file
 *.sql

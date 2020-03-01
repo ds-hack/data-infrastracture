@@ -7,7 +7,7 @@ from sqlalchemy import func
 
 # srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
-    str(pathlib.Path(__file__).resolve().parent.parent.parent), 'src'))
+    str(pathlib.Path(__file__).resolve().parent.parent.parent), 'main'))
 from common.logger.common_logger import CommonLogger  # noqa: #402
 from common.db.common_dao import CommonDao  # noqa: #402
 from stock.dto.stock_dto import StockPrice  # noqa: #402

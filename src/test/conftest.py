@@ -6,7 +6,7 @@ import pandas as pd
 
 # srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
-    str(pathlib.Path(__file__).resolve().parent.parent), 'src'))
+    str(pathlib.Path(__file__).resolve().parent.parent), 'main'))
 from common.db.base_engine import BaseEngine  # noqa: #402
 from stock.dto.stock_dto import Company, StockPrice  # noqa: #402
 
@@ -119,7 +119,12 @@ def company_test_data_001():
     CSVからデータをロードし、DTOのリストとして変換する.\n
     将来的に本番データを使ってsqldumpから事前にデータを準備することも検討に入れる.
     """
-    csv_path = './test/resources/prepare/company_test_data_001.csv'
+    csv_path = os.path.join(
+        os.path.dirname(__file__),
+        'resources',
+        'prepare',
+        'company_test_data_001.csv'
+    )
 
     return company_csv_to_dto(csv_path)
 
@@ -132,7 +137,12 @@ def stock_prices_test_data_001():
     CSVからデータをロードし、DTOのリストとして変換する.\n
     将来的に本番データを使ってsqldumpから事前にデータを準備することも検討に入れる.
     """
-    csv_path = './test/resources/prepare/stock_prices_test_data_001.csv'
+    csv_path = os.path.join(
+        os.path.dirname(__file__),
+        'resources',
+        'prepare',
+        'stock_prices_test_data_001.csv'
+    )
 
     return stock_price_csv_to_dto(csv_path)
 
@@ -143,7 +153,12 @@ def test_common_dao_delsert_data():
     """
     test_common_dao.py::TestDelsertで使用するテストデータ
     """
-    csv_path = './test/resources/common/test_common_dao_test_delsert_data.csv'
+    csv_path = os.path.join(
+        os.path.dirname(__file__),
+        'resources',
+        'common',
+        'test_common_dao_test_delsert_data.csv'
+    )
 
     return stock_price_csv_to_dto(csv_path)
 
@@ -153,6 +168,11 @@ def test_common_dao_upsert_data():
     """
     test_common_dao.py::TestUpsertで使用するテストデータ
     """
-    csv_path = './test/resources/common/test_common_dao_test_upsert_data.csv'
+    csv_path = os.path.join(
+        os.path.dirname(__file__),
+        'resources',
+        'common',
+        'test_common_dao_test_upsert_data.csv'
+    )
 
     return stock_price_csv_to_dto(csv_path)

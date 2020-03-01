@@ -1,3 +1,19 @@
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: dshack-development
+  name: dshack-config
+data:
+  # StatefulSetの名前解決 (Pod名.Service名.Namespace名.svc.cluster.local)
+  POSTGRES_HOST: postgres-sts-0.postgres-svc.dshack-development.svc.cluster.local
+  POSTGRES_TEST_HOST: postgres-test-sts-0.postgres-test-svc.dshack-development.svc.cluster.local
+  POSTGRES_PORT: "5432"
+  POSTGRES_TEST_PORT: "5432"
+  APP_LOG_PATH: ./log/app
+  TEST_LOG_PATH: ./log/test
+  SQL_LOG_PATH: ./log/sql
+---
 # PostgreSQL (StatefulSet + HeadlessService)
 # 開発時には外部のkubernetesクラスター外からもアクセスしたいので、NodePort Serviceも定義する
 apiVersion: v1
@@ -198,4 +214,38 @@ spec:
 ---
 # DB migration job
 # Pytest all test job(CI)
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: dshack-development
+  name: pytest-job
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: pytest-job
+        image: dshacks/pytest-job
+        env:
+        - name: POSTGRES_TEST_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: testdbname
+        - name: POSTGRES_TEST_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: POSTGRES_TEST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        envFrom:
+          - configMapRef:
+              name: dshack-config
+      restartPolicy: Never
 # Pytest smoke test job(CI)

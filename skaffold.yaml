@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2alpha4
+kind: Config
+metadata:
+  name: data-infrastructure
+build:
+  artifacts:
+  - image: dshacks/pytest-job
+deploy:
+  kubectl:
+    manifests:
+    - dshack-development.yaml
+    - dshack-secret.yaml
