@@ -1,38 +1,79 @@
 # Data-infrastructure
 
-個人分析用のデータ基盤構築用リポジトリ
+個人分析用のデータ基盤(DW)構築用リポジトリ
 
-無料版GithubはWikiの機能が使えないので、諸々をREADME.mdにまとめます。
+当リポジトリ以外に、
+
+- データハンドリング・MLモデル学習バッチを行うリポジトリ
+- 各種サービスAPIを扱うリポジトリ
+- Webアプリケーション・ダッシュボード等のプロダクトを扱うリポジトリ
+
+を1つ以上作成する予定。
 
 ## システム構想
 
-マイクロサービスアーキテクチャを採用し、個々のコンポーネントを独立に開発できるようにする予定です。
+分析システムを作るモチベーションは、様々な種類のデータを収集し、分析し、場合によってはモデル構築し、可視化（予測）するまでの一連の工程を、拡張・再利用可能な形で残すことを主としている。
 
-サービス毎に複数のDockerコンテナを準備し、オーケストレーションはkubernetesで行う予定です。
+### マイクロサービスアーキテクチャ
 
-採用のモチベーションは
+分析システムは探索的であり、変化に強いシステムが必要。システムの一部を切り捨てて、新しくすることも考えられるので、個々のシステムは疎結合にしたい。
 
-1. 分析自体が探索的であり、全体の要件は変わっていくので局所的・個別に開発を進めていきたい
-2. 共同開発の際に特定のサービスを任せることができる （コンテナにより開発環境の違いも軽減される）
-3. モダンなシステム設計・開発手法の自己学習
+### Immutable Infrastructure
 
-などなど。
+システムが巨大化すると、主な動作環境をローカルからクラウドに移す可能性が高い。Immutableなコンテナ上での開発によりローカルからクラウドへの移行時、また開発メンバーの追加時に環境依存の障害を最小限にしたい。
 
-- システム概要
+### CI/CD
+
+システム要件の追加・変更時のコストを可能な限り減らす形で、CI/CDを導入する。
 
 ![system architecture](https://user-images.githubusercontent.com/56133802/75120700-c6fee000-56d0-11ea-9aef-3acb68ee168e.png)
 
 ## インストール
 
-Dockerコンテナ化がまだなので、現状はローカルでパッケージをインストールします。
+開発環境の構築には、下記のインストールが必要。インストール方法はOSにより異なるため詳しくは公式を参照のこと。
 
-各々でPython仮想環境を用意し、リポジトリで管理している`requirements.txt`をもとに下記コマンドでインストールを実施してください。
+### Docker
 
+Docker CEのインストール。Docker hubのアカウントを作成し、手順に従ってダウンロード&インストール。
+
+- Docker for Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows
+- Docker for Mac: https://hub.docker.com/editions/community/docker-ce-desktop-mac
+
+### kubectlコマンド
+
+kubectlコマンドは、k8sクラスタを操作するためのCLI。公式に沿ってインストール。
+
+- kubernetes公式(kubectl): https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/
+
+（参考）mac OS
+
+```bash
+brew install kubernetes-cli
 ```
-pip install -r requirements.txt
+
+### minikube
+
+ローカルで動作させるシングルノードのKubernetes。公式に沿ってインストール。
+
+- kubernetes公式(minikube): https://kubernetes.io/docs/tasks/tools/install-minikube/
+
+（参考）mac OS
+
+```bash
+brew cask install minikube
+# brew updade minikube  # update時
+minikube start  # 仮想マシン起動
 ```
 
-**Docker導入時にインストール手順を更新します**
+### skaffold
+
+Skaffoldはkubernetesを使ったアプリケーション開発において継続的デプロイをサポートするOSS。リポジトリ直下のskaffold.yamlに設定を記載する。
+
+- skaffold公式ドキュメント: https://skaffold.dev/docs/install/
+
+```bash
+brew install skaffold
+```
 
 ## データベース
 
