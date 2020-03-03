@@ -11,7 +11,7 @@ from stock.dto.stock_dto import Base, Company, StockPrice  # noqa: #402
 
 
 if __name__ == '__main__':
-    # 認証情報は環境変数から取得する (ref: forego run)
+    # 認証情報は環境変数から取得する
     engine = BaseEngine(
         os.environ['POSTGRES_USER'],
         os.environ['POSTGRES_PASSWORD'],
