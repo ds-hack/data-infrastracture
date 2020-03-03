@@ -36,14 +36,14 @@
 
 Docker CEのインストール。Docker hubのアカウントを作成し、手順に従ってダウンロード&インストール。
 
-- Docker for Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows
-- Docker for Mac: https://hub.docker.com/editions/community/docker-ce-desktop-mac
+- [Docker for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+- [Docker for Mac](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
 
 ### kubectlコマンド
 
 kubectlコマンドは、k8sクラスタを操作するためのCLI。公式に沿ってインストール。
 
-- kubernetes公式(kubectl): https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/
+[kubernetes公式(kubectl)](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)
 
 （参考）mac OS
 
@@ -55,7 +55,7 @@ brew install kubernetes-cli
 
 ローカルで動作させるシングルノードのKubernetes。公式に沿ってインストール。
 
-- kubernetes公式(minikube): https://kubernetes.io/docs/tasks/tools/install-minikube/
+[kubernetes公式(minikube)](https://kubernetes.io/docs/tasks/tools/install-minikube/)
 
 （参考）mac OS
 
@@ -69,7 +69,7 @@ minikube start  # 仮想マシン起動
 
 Skaffoldはkubernetesを使ったアプリケーション開発において継続的デプロイをサポートするOSS。リポジトリ直下のskaffold.yamlに設定を記載する。
 
-- skaffold公式ドキュメント: https://skaffold.dev/docs/install/
+[skaffold公式ドキュメント](https://skaffold.dev/docs/install/)
 
 ```bash
 brew install skaffold
@@ -148,6 +148,21 @@ SQLクライアントからは、下記の認証情報を使ってコンテナ�
 
 クラスタ内部からは、Headless Service + Stateful Setの組み合わせでPod名による名前解決を利用し、`<Pod名>.<Service名>.<NameSpace>.svc.cluster.local`によりIPアドレスを得ることができる。
 
+```yaml
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: dshack-development
+  name: dshack-config
+data:
+  # StatefulSetの名前解決 (Pod名.Service名.Namespace名.svc.cluster.local)
+  POSTGRES_HOST: postgres-sts-0.postgres-svc.dshack-development.svc.cluster.local
+  POSTGRES_TEST_HOST: postgres-test-sts-0.postgres-test-svc.dshack-development.svc.cluster.local
+  POSTGRES_PORT: "5432"
+  POSTGRES_TEST_PORT: "5432"
+```
+
 上記はdshack-development.yamlの先頭にkubernetes ConfigMapとして設定しており、コンテナ内部からのDB接続情報(ホスト名+ポート)としては、こちらを使用する。
 
 ## ロギング環境
@@ -177,5 +192,4 @@ TDDのプラクティスを採用し、ユニットテストとロジック実�
 
 docstringのスタイルとして`numpydoc`を採用。システムの重要な側面をモデル化したコアドキュメントと、統一的なdocstringのみを整備し、書き手・読み手それぞれにとって最低限のコストで、最新状態のシステムが理解できる状態を目指す。
 
-参考： [Python]可読性を上げるための、docstringの書き方を学ぶ（NumPyスタイル）　https://qiita.com/simonritchie/items/49e0813508cad4876b5a
-
+(参考) [Python]可読性を上げるための、docstringの書き方を学ぶ（NumPyスタイル）[Qiitaリンク](https://qiita.com/simonritchie/items/49e0813508cad4876b5a)
