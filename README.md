@@ -109,7 +109,7 @@ T.B.D
 
 データベースの接続情報などの秘匿情報は、dshack-secret.yamlで管理し、内容はリポジトリ管理対象外とする。
 
-テンプレートは`tmpl/dshack-secret.yaml.tmpl`を基に各自のローカルリポジトリで管理する。
+テンプレートは`tmpl/dshack-secret.yaml.tmpl`をもとに各自のローカルリポジトリで作成・管理する。
 
 ```yaml
 apiVersion: v1
