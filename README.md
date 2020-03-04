@@ -95,6 +95,10 @@ Skaffoldはskaffold.yamlを読み取り、下記のタスクを担ってくれ�
 
 一度`skaffold dev`を叩いたあとは、ソースコードの保存を契機に1.〜5.が自動的に回る。
 
+- 参考: Skaffold Pipelines
+
+![workflow](https://user-images.githubusercontent.com/56133802/75913216-e1397a80-5e95-11ea-8e94-479eab9f645b.png)
+
 ## クラウドデプロイ
 
 当分はローカルでの開発を予定している。アプリケーション公開時に記載。
