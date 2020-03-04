@@ -14,19 +14,6 @@ data:
   TEST_LOG_PATH: ./log/test
   SQL_LOG_PATH: ./log/sql
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: dshack-development-logging
-  name: dshack-logging-config
-data:
-  ELASTICSEARCH_URL: http://elasticsearch:9200
-  XPACK_SECURITY_ENABLED: "true"
-  FLUENT_ELASTICSEARCH_HOST: "elasticsearch.dshack-development-logging"
-  FLUENT_ELASTICSEARCH_PORT: "9200"
-  FLUENT_ELASTICSEARCH_SCHEME: "http"
----
-
 # PostgreSQL (StatefulSet + HeadlessService)
 # 開発時には外部のkubernetesクラスター外からもアクセスしたいので、NodePort Serviceも定義する
 apiVersion: v1
@@ -111,7 +98,6 @@ spec:
         requests:
           storage: 1Gi
 ---
-
 # PostgreSQL Testing DB (StatefulSet + HeadlessService)
 apiVersion: v1
 kind: Service
@@ -195,7 +181,6 @@ spec:
         requests:
           storage: 1Gi
 ---
-
 # ElasticSearch (Deployment + NodePort Service)
 # ロギング環境はFluend + ElasticSearch + kibanaで構築する
 apiVersion: v1
@@ -246,7 +231,6 @@ spec:
             cpu: 500m
             memory: 4Gi
 ---
-
 # kibana (Deployment + NodePort Service)
 # ログ監視用のダッシュボードport30080でアクセスする
 apiVersion: v1
@@ -287,15 +271,11 @@ spec:
           value: http://elasticsearch:9200
         - name: XPACK_SECURITY_ENABLED
           value: "true"
-        # envFrom:
-        #   - configMapRef:
-        #       name: dshack-logging-config
         ports:
         - containerPort: 5601
           name: http
           protocol: TCP
 ---
-
 # Fluentd(DaemonSet + RBAC)
 # 適切なPodのログを取得できるようにRBAC(Role Based Access Control)を利用する
 apiVersion: v1
@@ -372,9 +352,6 @@ spec:
             value: "http"
           - name: FLUENT_UID
             value: "0"
-        # envFrom:
-        #   - configMapRef:
-        #       name: dshack-logging-config
         resources:
           limits:
             memory: 200Mi
@@ -415,7 +392,7 @@ spec:
 #   ports:
 #   - port: 8080
 #     targetPort: 80
-#     nodePort: 30080
+#     nodePort: 30081
 #   selector:
 #     app: schemaspy-dashboard
 # ---
@@ -433,7 +410,6 @@ spec:
 #       storage: 0.5Gi
 #   storageClassName: standard
 ---
-
 # DB migration job
 # Pytest all test job(CI)
 apiVersion: batch/v1
