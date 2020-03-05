@@ -7,6 +7,7 @@ import pandas as pd
 # srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
     str(pathlib.Path(__file__).resolve().parent.parent), 'main'))
+from common.logger.common_logger import CommonLogger  # noqa: #402
 from common.db.base_engine import BaseEngine  # noqa: #402
 from stock.dto.stock_dto import Company, StockPrice  # noqa: #402
 
@@ -40,6 +41,18 @@ def testdb(testdb_session):
     """
     testdb_session.rollback()
     return testdb_session
+
+
+@pytest.fixture(scope='function')
+def application_logger():
+    """
+    アプリケーション内で共有するロガー。環境変数から出力パスを渡す。
+    """
+    logger = CommonLogger().get_application_logger(
+        os.environ['APPLICATION_LOG_PATH'],
+        __name__,
+    )
+    return logger
 
 
 # テスト用の事前準備データはファイルを跨いで使うことが多いので、conftest.pyにまとめる

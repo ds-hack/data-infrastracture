@@ -1,0 +1,236 @@
+# ElasticSearch (StatefulSet + NodePort Service)
+# ロギング環境はFluend + ElasticSearch + kibanaで構築する
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-development-logging
+  name: elasticsearch
+  labels:
+    service: elasticsearch
+spec:
+  selector:
+    component: elasticsearch
+  clusterIP: None
+  ports:
+  - port: 9200
+    targetPort: 9200
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dshack-development-logging
+  name: elasticsearch
+spec:
+  serviceName: elasticsearch
+  replicas: 1
+  selector:
+    matchLabels:
+      component: elasticsearch
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+        env:
+        - name: discovery.type
+          value: single-node
+        ports:
+        - containerPort: 9200
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 4Gi
+          requests:
+            cpu: 500m
+            memory: 4Gi
+        volumeMounts:
+        - name: elasticsearch-pvc
+          mountPath: /usr/share/elasticsearch/data
+          subPath: logging
+  volumeClaimTemplates:
+  - metadata:
+      name: elasticsearch-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 2Gi
+---
+# kibana (Deployment + NodePort Service)
+# ログ監視用のダッシュボードport30080でアクセスする
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-development-logging
+  name: kibana
+  labels:
+    service: kibana
+spec:
+  type: NodePort
+  selector:
+    run: kibana
+  ports:
+  - port: 5601
+    targetPort: 5601
+    nodePort: 30080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dshack-development-logging
+  name: kibana
+spec:
+  selector:
+    matchLabels:
+      run: kibana
+  template:
+    metadata:
+      labels:
+        run: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.6.0
+        env:
+        - name: ELASTICSEARCH_URL
+          value: http://elasticsearch:9200
+        - name: XPACK_SECURITY_ENABLED
+          value: "true"
+        ports:
+        - containerPort: 5601
+          name: http
+          protocol: TCP
+---
+# Fluentd(DaemonSet + RBAC)
+# 適切なPodのログを取得できるようにRBAC(Role Based Access Control)を利用する
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: dshack-development
+  labels:
+    k8s-app: fluentd-logging
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-logging
+      version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-logging
+        version: v1
+    spec:
+      serviceAccount: fluentd
+      serviceAccountName: fluentd
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      # https://github.com/fluent/fluentd-kubernetes-daemonset/issues/90
+      # ConfigMapで設定したfluentdの設定ファイルを/fluentd/etc以下に配置する処理
+      initContainers:
+      - name: copy-fluentd-config
+        image: busybox
+        command: ['sh', '-c', 'cp /config-volume/..data/* /fluentd/etc']
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config-volume
+        - name: fluentdconf
+          mountPath: /fluentd/etc
+      containers:
+      - name: fluentd
+        image: fluent/fluentd-kubernetes-daemonset:v1.9-debian-elasticsearch7-1
+        env:
+          - name:  FLUENT_ELASTICSEARCH_HOST
+            value: "elasticsearch-0.elasticsearch.dshack-development-logging.svc.cluster.local"
+          - name:  FLUENT_ELASTICSEARCH_PORT
+            value: "9200"
+          - name: FLUENT_ELASTICSEARCH_SCHEME
+            value: "http"
+          - name: FLUENT_UID
+            value: "0"
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config-volume
+        - name: fluentdconf
+          mountPath: /fluentd/etc
+        - name: varlog
+          mountPath: /var/log
+        - name: varlogjournal
+          mountPath: var/log/journal
+          readOnly: true
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config-volume
+        configMap:
+          name: fluentd-config
+      - name: fluentdconf
+        emptyDir: {}
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlogjournal
+        hostPath:
+          path: /var/log/journal
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+---
+# Fluentdのログ取得設定
+# https://docs.fluentd.org/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: dshack-development
+  labels:
+    k8s-app: fluentd-logging
+    version: v1
+    kubernetes.io/cluster-service: "true"
+data:
+  fluent.conf: |
+    @include kubernetes.conf
+    <match **>
+       @type elasticsearch
+       @id out_es
+       @log_level info
+       include_tag_key true
+       host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+       port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+       scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+       ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'true'}"
+       user "#{ENV['FLUENT_ELASTICSEARCH_USER']}"
+       password "#{ENV['FLUENT_ELASTICSEARCH_PASSWORD']}"
+       reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'true'}"
+       logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'logstash'}"
+       logstash_format true
+       type_name fluentd
+       <buffer>
+         flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+         flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+         chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+         queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+         retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+         retry_forever true
+       </buffer>
+    </match>
+  kubernetes.conf: |
+    <match fluent.**>
+      @type null
+    </match>

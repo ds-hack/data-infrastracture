@@ -9,6 +9,10 @@ from common.db.base_engine import BaseEngine  # noqa: #402
 from common.logger.common_logger import CommonLogger  # noqa: #402
 from stock.dto.stock_dto import Base, Company, StockPrice  # noqa: #402
 
+logger = CommonLogger().get_application_logger(
+    os.environ['APPLICATION_LOG_PATH'],
+    __name__,
+)
 
 if __name__ == '__main__':
     # 認証情報は環境変数から取得する
@@ -28,11 +32,6 @@ if __name__ == '__main__':
         os.environ['POSTGRES_TEST_PORT'],
         os.environ['POSTGRES_TEST_DB'],
     ).engine
-
-    logger = CommonLogger().get_application_logger(
-        os.environ['APP_LOG_PATH'],
-        __name__,
-    )
 
     # DBに存在しない全てのテーブルを作成する
     # 作成済のテーブルについてはスキップする

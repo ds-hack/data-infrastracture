@@ -1,0 +1,2 @@
+docker run -v "$PWD/schema:/output" --net="host" schemaspy/schemaspy:snapshot \
+ -t pgsql -host <DBホスト名/IP>:<ポート> -db <DB名> -u <DBユーザー名> -p <DBパスワード>

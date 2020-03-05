@@ -1,5 +1,6 @@
-# Secret
+# Secret files
 dshack-secret.yaml
+schemaspy.sh
 
 # package and virtual environments(venv)
 /bin
@@ -23,3 +24,6 @@ __pycache__/
 
 # DB dump file
 *.sql
+
+# schemaspy output
+schema/

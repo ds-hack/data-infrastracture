@@ -38,15 +38,13 @@ class TestDelsert():
         self,
         session_001,
         test_common_dao_delsert_data,
+        application_logger,
     ):
         """
         全DELETE全INSERT処理を実施した後のレコード数が、想定通りであるか
         """
-        logger = CommonLogger().get_test_logger(
-            os.environ['TEST_LOG_PATH'],
-            __name__,
-        )
-        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao = CommonDao(session_001, StockPrice,
+                                    application_logger)
         stock_price_dao.delsert(test_common_dao_delsert_data,
                                 ['company_id', 'date'])
         record_count = session_001.query(
@@ -64,6 +62,7 @@ class TestDelsert():
         self,
         session_001,
         test_common_dao_delsert_data,
+        application_logger,
         company_id,
         date,
     ):
@@ -72,11 +71,8 @@ class TestDelsert():
 
         delsertメソッド内ではdtoに手を加えていないので保持されていることのみを確認する
         """
-        logger = CommonLogger().get_test_logger(
-            os.environ['TEST_LOG_PATH'],
-            __name__,
-        )
-        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao = CommonDao(session_001, StockPrice,
+                                    application_logger)
         stock_price_dao.delsert(test_common_dao_delsert_data,
                                 ['company_id', 'date'])
 
@@ -100,15 +96,13 @@ class TestUpsert():
         self,
         session_001,
         test_common_dao_upsert_data,
+        application_logger,
     ):
         """
         UPSERT処理を実施した後のレコード数が、想定通りであるか
         """
-        logger = CommonLogger().get_test_logger(
-            os.environ['TEST_LOG_PATH'],
-            __name__,
-        )
-        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao = CommonDao(session_001, StockPrice,
+                                    application_logger)
         stock_price_dao.upsert(test_common_dao_upsert_data,
                                ['company_id', 'date'])
         record_count = session_001.query(
@@ -125,6 +119,7 @@ class TestUpsert():
         self,
         session_001,
         test_common_dao_upsert_data,
+        application_logger,
         company_id,
         date
     ):
@@ -133,11 +128,8 @@ class TestUpsert():
 
         upsertメソッド内ではdtoに手を加えていないので保持されていることのみを確認する
         """
-        logger = CommonLogger().get_test_logger(
-            os.environ['TEST_LOG_PATH'],
-            __name__,
-        )
-        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao = CommonDao(session_001, StockPrice,
+                                    application_logger)
         stock_price_dao.upsert(test_common_dao_upsert_data,
                                ['company_id', 'date'])
 
@@ -161,6 +153,7 @@ class TestUpsert():
         self,
         session_001,
         test_common_dao_upsert_data,
+        application_logger,
         company_id,
         date,
     ):
@@ -177,11 +170,8 @@ class TestUpsert():
                 StockPrice.date == date,
             ).first()
 
-        logger = CommonLogger().get_test_logger(
-            os.environ['TEST_LOG_PATH'],
-            __name__,
-        )
-        stock_price_dao = CommonDao(session_001, StockPrice, logger)
+        stock_price_dao = CommonDao(session_001, StockPrice,
+                                    application_logger)
         stock_price_dao.upsert(test_common_dao_upsert_data,
                                ['company_id', 'date'])
 
