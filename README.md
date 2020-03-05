@@ -169,11 +169,27 @@ data:
 
 上記はdshack-development.yamlの先頭にkubernetes ConfigMapとして設定しており、コンテナ内部からのDB接続情報(ホスト名+ポート)としては、こちらを使用する。
 
+### データモデル
+
+DBのドキュメンテーションに役立つ[SchemaSpy](http://schemaspy.org/)を活用している。
+
+1. `./datamodel/schemaspy.sh.tmpl`にDBの接続情報を入力し、`schemaspy.sh`としてローカル保存する。
+2. 次のコマンドにより、`./schema`フォルダ以下にテーブル情報・フィールド情報・ER図などが出力される。
+```bash
+cd datamodel
+bash ./schemaspy.sh
+```
+3. `./schema`フォルダ以下の`index.html`をブラウザで開くとダッシュボードが表示される。
+
+<img width="1428" alt="schemaspy" src="https://user-images.githubusercontent.com/56133802/76035174-289e3480-5f84-11ea-95f9-553021b715a2.png">
+
+<img width="563" alt="schemaspy-er" src="https://user-images.githubusercontent.com/56133802/76035232-54211f00-5f84-11ea-9fbd-ca1b5d9ca62a.png">
+
+ER図は外部参照制約を基に付けているため、適切に制約が付けられているかが視覚的に分かる。テーブルやフィールドのコメントもダッシュボードに反映される。
+
 ## ロギング環境
 
-Fluend + kibana + ElasticSearchのロギング環境を`kubernetes/dshack-logging.yaml`に追加したが、PCスペック的に厳しいので
-
-Skaffold.yamlの自動デプロイ対象外とし、ローカル開発では使用しないことに決定した。
+Fluend + kibana + ElasticSearchのロギング環境を`kubernetes/dshack-logging.yaml`に追加したが、PCスペック的に厳しいのでSkaffold.yamlの自動デプロイ対象外とし、ローカル開発では使用しないことに決定した。
 
 ロギングには`./src/main/common/logger/common_logger.py`に含まれるCommonloggerクラスを使用する。
 
