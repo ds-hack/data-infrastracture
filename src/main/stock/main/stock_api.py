@@ -22,7 +22,9 @@ class StooqAPI(object):
         指定の銘柄コードに対して、pandas-datareaderを使ってデータを取得するためのクラス
 
         stooqデータソースから取得する株価データはStooqに存在する範囲で全てのデータを取得するようになっている\n
-        （期間指定不可）ため、引数の開始日と終了日に従ってデータを絞り込む（デフォルトは絞り込み無し）
+        （期間指定不可）ため、引数の開始日と終了日に従ってデータを絞り込む。デフォルトは絞り込み無し。\n
+        現時点では日本企業のみを取得対象とすることを前提とし、海外企業は別のAPIを使用することとするため、\n
+        stock_codeに".JP"を付与してリクエストする。
 
         Parameters
         ----------
@@ -33,7 +35,7 @@ class StooqAPI(object):
         end_date: datetime.date
             株価データの取得終了日
         """
-        stock_df = web.DataReader(stock_code, 'stooq')
+        stock_df = web.DataReader(stock_code + '.JP', 'stooq')
         stock_df = stock_df[(stock_df.index >= pd.to_datetime(start_date)) &
                             (stock_df.index <= pd.to_datetime(end_date))]
         return stock_df

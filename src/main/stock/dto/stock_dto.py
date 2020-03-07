@@ -20,6 +20,7 @@ class Company(Base):
                         comment='システム内で設定する企業毎に一意となるコード')
     company_name = Column(String(256), nullable=False, comment='企業名')
     stock_code = Column(String(16), nullable=False, comment='銘柄コード')
+    country_code = Column(String(16), nullable=False, comment='国コード')
     listed_market = Column(String(32), nullable=False, comment='上場市場')
     foundation_date = Column(DateTime, comment='設立日(月)')
     longitude = Column(Float, comment='本社所在地(経度)')

@@ -23,7 +23,7 @@ class TestStooqAPI():
         最新のデータは翌立会日以降となるので、週末は基本的に木曜日までのデータしか存在しない。
         """
         stock_api = StooqAPI()
-        stock_df = stock_api.get_stock_price('6758.JP',
+        stock_df = stock_api.get_stock_price('6758',
                                              datetime.date(2020, 2, 24),
                                              datetime.date(2020, 2, 28))
         # 2020/2/24は日曜日のため、2020/2/25〜2020/2/28 4件のデータが返される
@@ -35,7 +35,7 @@ class TestStooqAPI():
         APIより取得したデータが正しくカラムを保持しているか確認する。
         """
         stock_api = StooqAPI()
-        stock_df = stock_api.get_stock_price('6758.JP',
+        stock_df = stock_api.get_stock_price('6758',
                                              datetime.date(2020, 2, 24),
                                              datetime.date(2020, 2, 28))
         assert 'Open' in stock_df.columns

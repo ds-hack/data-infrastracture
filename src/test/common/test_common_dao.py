@@ -52,9 +52,9 @@ class TestDelsert():
         assert len(test_common_dao_delsert_data) == record_count
 
     @pytest.mark.parametrize('company_id, date',
-                             [('0001JP', datetime.date(2020, 2, 24)),
-                              ('0002JP', datetime.date(2020, 2, 25)),
-                              ('0004JP', datetime.date(2020, 2, 29)),
+                             [('0001', datetime.date(2020, 2, 24)),
+                              ('0002', datetime.date(2020, 2, 25)),
+                              ('0004', datetime.date(2020, 2, 29)),
                               ])
     @pytest.mark.smoke
     def test_delsert_is_correct_data(
@@ -110,8 +110,8 @@ class TestUpsert():
         assert len(test_common_dao_upsert_data) == record_count
 
     @pytest.mark.parametrize('company_id, date',
-                             [('0001JP', datetime.date(2020, 2, 29)),
-                              ('0004JP', datetime.date(2020, 2, 29)),
+                             [('0001', datetime.date(2020, 2, 29)),
+                              ('0004', datetime.date(2020, 2, 29)),
                               ])
     @pytest.mark.smoke
     def test_upsert_is_correct_insert_data(
@@ -143,9 +143,9 @@ class TestUpsert():
         assert record is not None
 
     @pytest.mark.parametrize('company_id, date',
-                             [('0001JP', datetime.date(2020, 2, 24)),
-                              ('0002JP', datetime.date(2020, 2, 25)),
-                              ('0003JP', datetime.date(2020, 2, 25)),
+                             [('0001', datetime.date(2020, 2, 24)),
+                              ('0002', datetime.date(2020, 2, 25)),
+                              ('0003', datetime.date(2020, 2, 25)),
                               ])
     @pytest.mark.smoke
     def test_upsert_is_correct_update_data(

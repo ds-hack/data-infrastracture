@@ -66,8 +66,9 @@ def company_csv_to_dto(csv_path):
     companyテーブルのデータをcsvをデータソースとして事前準備する各フィクスチャ内で使用する
     """
     dtypes = {'company_id': 'str', 'company_name': 'str',
-              'stock_code': 'str', 'listed_market': 'str',
-              'longitude': 'float', 'latitude': 'float'}
+              'stock_code': 'str', 'country_code': 'str',
+              'listed_market': 'str', 'longitude': 'float',
+              'latitude': 'float'}
     try:
         test_data = pd.read_csv(csv_path, encoding='utf-8', dtype=dtypes)
     except UnicodeEncodeError:
@@ -79,6 +80,7 @@ def company_csv_to_dto(csv_path):
         company.company_id = test_data.at[idx, 'company_id']
         company.company_name = test_data.at[idx, 'company_name']
         company.stock_code = test_data.at[idx, 'stock_code']
+        company.country_code = test_data.at[idx, 'country_code']
         company.listed_market = test_data.at[idx, 'listed_market']
         company.foundation_date = test_data.at[idx, 'foundation_date']
         company.longitude = test_data.at[idx, 'longitude']

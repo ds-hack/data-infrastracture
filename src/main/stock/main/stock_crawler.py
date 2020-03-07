@@ -1,0 +1,2 @@
+class KabutanCrawler(object):
+    pass
