@@ -12,7 +12,7 @@ class Company(Base):
     """
     __tablename__ = 'company'
     __table_args__ = {
-        'comment': '企業の主要な情報をマスタとして格納する\n'
+        'comment': '企業の主要な情報をマスタとして格納する.日本の上場企業のみを対象.\n'
                    '資本金・従業員数等の情報は時系列データなので、別テーブルで扱う'
     }
 
@@ -27,8 +27,8 @@ class Company(Base):
     ins_ts = Column(DateTime, default=datetime.datetime.now())
     upd_ts = Column(DateTime, default=datetime.datetime.now())
 
-    # 外部キー制約
-    company = relationship('StockPrice')
+    # 外部キー制約 (one-to-many)
+    stockprices = relationship('StockPrice')
 
 
 class StockPrice(Base):

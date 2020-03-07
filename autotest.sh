@@ -2,4 +2,4 @@
 # データ収集はJob & CronJobで実施するので、Dockerファイルは分割する
 sleep 15
 python ./src/main/migrate.py
-pytest --cov=./src/main ./src/test
+pytest -m 'smoke' --cov=./src/main ./src/test

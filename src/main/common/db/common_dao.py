@@ -1,5 +1,7 @@
+from logging import Logger
 from typing import List
 from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 
 class CommonDao(object):
@@ -15,9 +17,9 @@ class CommonDao(object):
     """
     def __init__(
         self,
-        session,
-        dto_class,
-        logger,
+        session: Session,
+        dto_class: object,
+        logger: Logger,
     ):
         """
         SQL AlchemyでDBを操作するためのセッション・DTOとアプリケーションログ出力用のロガーを受け取る
@@ -37,7 +39,7 @@ class CommonDao(object):
 
     def delsert(
         self,
-        dtos,
+        dtos: List[object],
         primary_keys: List[str],
     ):
         """
@@ -63,7 +65,7 @@ class CommonDao(object):
 
     def upsert(
         self,
-        dtos,
+        dtos: List[object],
         primary_keys: List[str],
     ):
         """
