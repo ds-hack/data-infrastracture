@@ -24,15 +24,6 @@ if __name__ == '__main__':
         os.environ['POSTGRES_DB'],
     ).engine
 
-    # テスト用DBも併せて作成する
-    test_engine = BaseEngine(
-        os.environ['POSTGRES_TEST_USER'],
-        os.environ['POSTGRES_TEST_PASSWORD'],
-        os.environ['POSTGRES_TEST_HOST'],
-        os.environ['POSTGRES_TEST_PORT'],
-        os.environ['POSTGRES_TEST_DB'],
-    ).engine
-
     # DBに存在しない全てのテーブルを作成する
     # 作成済のテーブルについてはスキップする
     # ALTER TABLEについては、DTOの修正とSQLで対応する
@@ -46,11 +37,4 @@ if __name__ == '__main__':
             logger.info(f'{tn} table is already exist. '
                         f'Skip creating table.')
 
-        try:
-            Base.metadata.tables[tn].create(
-                bind=test_engine, checkfirst=False)
-            logger.info(f'{tn} table created on testdb.')
-        except ProgrammingError:
-            logger.info(f'{tn} table is already exist in testdb. '
-                        f'Skip creating table.')
     logger.info('DB Migration end...')

@@ -20,11 +20,11 @@ def testdb_session():
     DBセッションを確立するのはテスト全体を通して1回のみ
     """
     session = BaseEngine(
-        os.environ['POSTGRES_TEST_USER'],
-        os.environ['POSTGRES_TEST_PASSWORD'],
-        os.environ['POSTGRES_TEST_HOST'],
-        os.environ['POSTGRES_TEST_PORT'],
-        os.environ['POSTGRES_TEST_DB'],
+        os.environ['POSTGRES_USER'],
+        os.environ['POSTGRES_PASSWORD'],
+        os.environ['POSTGRES_HOST'],
+        os.environ['POSTGRES_PORT'],
+        os.environ['POSTGRES_DB'],
     ).get_session()
 
     yield session

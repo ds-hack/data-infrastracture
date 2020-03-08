@@ -174,9 +174,8 @@ metadata:
 data:
   # StatefulSetの名前解決 (Pod名.Service名.Namespace名.svc.cluster.local)
   POSTGRES_HOST: postgres-sts-0.postgres-svc.dshack-development.svc.cluster.local
-  POSTGRES_TEST_HOST: postgres-test-sts-0.postgres-test-svc.dshack-development.svc.cluster.local
   POSTGRES_PORT: "5432"
-  POSTGRES_TEST_PORT: "5432"
+  ・・・
 ```
 
 上記はdshack-development.yamlの先頭にkubernetes ConfigMapとして設定しており、コンテナ内部からのDB接続情報(ホスト名+ポート)としては、こちらを使用する。

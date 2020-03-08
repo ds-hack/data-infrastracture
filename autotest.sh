@@ -4,7 +4,7 @@
 # DBの疎通確認に成功するまで、DBマイグレーションと自動テスト実行を待つ
 while :
 do
-  /bin/ping $POSTGRES_TEST_HOST -w1 -c1 &> /dev/null
+  /bin/ping $POSTGRES_HOST -w1 -c1 &> /dev/null
   if [ $? = 0 ]; then
     echo "DB Connection OK. Autotest will start after 10 seconds."
     sleep 10

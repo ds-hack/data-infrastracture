@@ -5,11 +5,9 @@ metadata:
 build:
   artifacts:
   - image: dshacks/pytest-job
+    context: .
 deploy:
   kubectl:
     manifests:
-    - ./kubernetes/local/deploy/dshack-secret.yaml
-    - ./kubernetes/local/deploy/dshack-rbac.yaml
-    - ./kubernetes/local/deploy/dshack-db.yaml
-    # - ./kubernetes/dshack-logging.yaml  # Spec不足のためローカルでは使用しない
-    - ./kubernetes/local/dshack-test.yaml
+    - ./kubernetes/local/credentials/*
+    - ./kubernetes/local/autotest/*
