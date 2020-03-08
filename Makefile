@@ -1,3 +1,9 @@
+up-local:
+	kubectl apply -f ./kubernetes/local/deploy
+
+down-local:
+	kubectl delete -f ./kubernetes/local/deploy
+
 # PostgreSQLは日時でカスタム形式のバックアップをとる(初回はdbdump/postgresディレクトリを作成後実行)
 # DBの接続情報は環境変数経由で指定
 pg_logical_backup:

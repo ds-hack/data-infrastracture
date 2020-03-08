@@ -99,6 +99,15 @@ Skaffoldはskaffold.yamlを読み取り、下記のタスクを担ってくれ�
 
 ![workflow](https://user-images.githubusercontent.com/56133802/75913216-e1397a80-5e95-11ea-8e94-479eab9f645b.png)
 
+自動テスト完了後、通常のローカルデプロイを実施したい場合は、makeコマンドをインストールした状態で、
+
+```bash
+make up-local
+make down-local
+```
+
+により、ローカルデプロイに必要なコンテナ群の起動と停止をまとめて行うことができる。
+
 ## クラウドデプロイ
 
 コストとの相談で随時クラウドに移行していく予定。当面はローカルデプロイのみ。
@@ -186,6 +195,27 @@ bash ./schemaspy.sh
 <img width="563" alt="schemaspy-er" src="https://user-images.githubusercontent.com/56133802/76035232-54211f00-5f84-11ea-9fbd-ca1b5d9ca62a.png">
 
 ER図は外部参照制約を基に付けているため、適切に制約が付けられているかが視覚的に分かる。テーブルやフィールドのコメントもダッシュボードに反映される。
+
+### バックアップとリストア
+
+`pg_dump`によるバックアップコマンドをMakefileに用意している。
+
+PostgreSQLのバックアップ形式には大きく分けて、プレーンテキスト形式・カスタム形式・tar形式があるが、容量が小さいカスタム形式を採用している。
+
+データベースの接続情報は各自の`.bashprofile`等に環境変数の設定を追加するなどしておく。
+
+```Makefile
+# PostgreSQLは日時でカスタム形式のバックアップをとる(初回はdbdump/postgresディレクトリを作成後実行)
+# DBの接続情報は環境変数経由で指定
+pg_logical_backup:
+  pg_dump "-Fc" -h "${DSHACK_PG_HOST}" -p "${DSHACK_PG_PORT}" -U "${DSHACK_PG_USER}" -d "${DSHACK_PG_DBNAME}" > dbdump/postgres/dshack_devdb_$(shell date +"%Y%m%d").custom
+
+# ダンプファイルのPathは、コマンドライン引数として与える(ex. make pg_all_restore DUMP_FILE_PATH="...")
+pg_logical_restore:
+  pg_restore -h ${DSHACK_PG_HOST} -p ${DSHACK_PG_PORT} -U ${DSHACK_PG_USER} -d ${DSHACK_PG_DBNAME} < ${DUMP_FILE_PATH}
+```
+
+バックアップは`make pg_logical_backup`、リストアは`make pg_logicalrestore DUMP_FILE_PATH=<Path...>`により可能。
 
 ## ロギング環境
 

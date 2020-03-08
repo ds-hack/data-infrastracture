@@ -8,8 +8,8 @@ build:
 deploy:
   kubectl:
     manifests:
-    - ./kubernetes/dshack-secret.yaml
-    - ./kubernetes/dshack-rbac.yaml
-    - ./kubernetes/dshack-db.yaml
+    - ./kubernetes/local/deploy/dshack-secret.yaml
+    - ./kubernetes/local/deploy/dshack-rbac.yaml
+    - ./kubernetes/local/deploy/dshack-db.yaml
     # - ./kubernetes/dshack-logging.yaml  # Spec不足のためローカルでは使用しない
-    - ./kubernetes/dshack-local-ci.yaml
+    - ./kubernetes/local/dshack-test.yaml
