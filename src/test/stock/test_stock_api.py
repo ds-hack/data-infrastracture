@@ -25,7 +25,7 @@ class TestStooqAPI():
         stock_api = StooqAPI()
         stock_df = stock_api.get_stock_price('6758',
                                              datetime.date(2020, 2, 24),
-                                             datetime.date(2020, 2, 28))
+                                             None)
         # 2020/2/24は日曜日のため、2020/2/25〜2020/2/28 4件のデータが返される
         assert len(stock_df) == 4
 

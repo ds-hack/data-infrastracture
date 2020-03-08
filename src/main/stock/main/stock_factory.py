@@ -41,8 +41,8 @@ class JpStockFactory(object):
         stock_codes_dtos = session.query(Company.stock_code).filter(
             Company.country_code == 'JP'
         ).all()
-
-        return [dto.stock_code for dto in stock_codes_dtos]
+        stock_codes = [dto.stock_code for dto in stock_codes_dtos]
+        return stock_codes
 
     def get_stock_api(self) -> StooqAPI:
         """

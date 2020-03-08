@@ -131,7 +131,7 @@ def company_test_data_001():
     """
     Resourcesフォルダからテスト用に事前にDBに格納するcompanyテーブルのダミーデータ
 
-    CSVからデータをロードし、DTOのリストとして変換する.\n
+    CSVからデータをロードし、DTOのリストとして変換する.
     将来的に本番データを使ってsqldumpから事前にデータを準備することも検討に入れる.
     """
     csv_path = os.path.join(
@@ -149,7 +149,7 @@ def stock_prices_test_data_001():
     """
     Resourcesフォルダからテスト用に事前にDBに格納するstock_priceテーブルのダミーデータ
 
-    CSVからデータをロードし、DTOのリストとして変換する.\n
+    CSVからデータをロードし、DTOのリストとして変換する.
     将来的に本番データを使ってsqldumpから事前にデータを準備することも検討に入れる.
     """
     csv_path = os.path.join(

@@ -19,7 +19,7 @@ def db_with_test_data_001(
     stock_prices_test_data_001
 ):
     """
-    CommonDaoクラスのテストに使用するデータをDBに格納し、テストメソッド内で\n
+    CommonDaoクラスのテストに使用するデータをDBに格納し、テストメソッド内で
     使用するためのセッションを返す
     """
     # テストメソッド実行毎にrollback()とadd_all()が実行される

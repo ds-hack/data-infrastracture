@@ -15,7 +15,7 @@ def db_with_test_data_001(
     company_test_data_001,
 ):
     """
-    StockFactoryクラスのテストに使用するデータをDBに格納し、テストメソッド内で\n
+    StockFactoryクラスのテストに使用するデータをDBに格納し、テストメソッド内で
     使用するためのセッションを返す
     """
     # テストメソッド実行毎にrollback()とadd_all()が実行される
@@ -30,7 +30,7 @@ class TestJpStockFactory():
     @pytest.mark.smoke
     def test_get_target_stock_codes(self, session_001):
         """
-        Companyテーブルについて、country_codeが"JP"であるレコードを取得し、その銘柄コードのリストが\n
+        Companyテーブルについて、country_codeが"JP"であるレコードを取得し、その銘柄コードのリストが
         正しく得られていることをテストする
         """
         stock_factory = JpStockFactory()
