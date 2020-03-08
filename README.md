@@ -185,6 +185,8 @@ data:
 
 DBのドキュメンテーションに役立つ[SchemaSpy](http://schemaspy.org/)を活用している。
 
+[Github Pages(プロジェクトサイト)](https://ds-hack.github.io/data-infrastracture/index.html)で公開しています。
+
 1. `./datamodel/schemaspy.sh.tmpl`にDBの接続情報を入力し、`schemaspy.sh`としてローカル保存する。
 2. 次のコマンドにより、`./schema`フォルダ以下にテーブル情報・フィールド情報・ER図などが出力される。
 ```bash
