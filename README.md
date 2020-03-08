@@ -102,8 +102,11 @@ Skaffoldはskaffold.yamlを読み取り、下記のタスクを担ってくれ�
 自動テスト完了後、通常のローカルデプロイを実施したい場合は、makeコマンドをインストールした状態で、
 
 ```bash
-make up-local
-make down-local
+make up-local  # 起動
+```
+
+```bash
+make down-local  # 停止
 ```
 
 により、ローカルデプロイに必要なコンテナ群の起動と停止をまとめて行うことができる。
@@ -215,7 +218,7 @@ pg_logical_restore:
   pg_restore -h ${DSHACK_PG_HOST} -p ${DSHACK_PG_PORT} -U ${DSHACK_PG_USER} -d ${DSHACK_PG_DBNAME} < ${DUMP_FILE_PATH}
 ```
 
-バックアップは`make pg_logical_backup`、リストアは`make pg_logicalrestore DUMP_FILE_PATH=<Path...>`により可能。
+バックアップは`make pg_logical_backup`、リストアは`make pg_logical_restore DUMP_FILE_PATH=<Path...>`により可能。
 
 ## ロギング環境
 
