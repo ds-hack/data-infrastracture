@@ -115,6 +115,8 @@ make down-local  # 停止
 
 コストとの相談で随時クラウドに移行していく予定。当面はローカルデプロイのみ。
 
+**(追記)クラウドを活用する利点が大きいので3月末あたりから移行をはじめます。**
+
 ## k8sアーキテクチャ
 
 クラウド展開時に改めて検討。
@@ -183,6 +185,8 @@ data:
 ### データモデル
 
 DBのドキュメンテーションに役立つ[SchemaSpy](http://schemaspy.org/)を活用している。
+
+[Github Pages(プロジェクトサイト)](https://ds-hack.github.io/data-infrastracture/index.html)で公開しています。
 
 1. `./datamodel/schemaspy.sh.tmpl`にDBの接続情報を入力し、`schemaspy.sh`としてローカル保存する。
 2. 次のコマンドにより、`./schema`フォルダ以下にテーブル情報・フィールド情報・ER図などが出力される。
