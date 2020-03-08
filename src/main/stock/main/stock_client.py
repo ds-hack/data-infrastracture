@@ -52,11 +52,7 @@ class StockClient(object):
             stock_factory.get_stock_crawler(),
         )
         for stock_code in stock_codes:
-            # stock_codeとcountry_codeから、company_idを調べる
-            company_id = self.session.query(Company.company_id).filter(
-                Company.stock_code == stock_code,
-                Company.country_code == "JP"
-            ).one().company_id
+            company_id = self.get_company_id(stock_code, 'JP')
             stock_price_dtos = stock_manager.get_incremental_stock_price(
                 stock_code,
                 company_id,
@@ -64,6 +60,27 @@ class StockClient(object):
             # UPSERTによりDB更新
             if (stock_price_dtos is not None) and (len(stock_price_dtos) >= 1):
                 self.dao.upsert(stock_price_dtos, ['company_id', 'date'])
+
+    def get_company_id(
+        self,
+        stock_code: str,
+        country_code: str,
+    ):
+        """
+        Companyテーブルに対して、銘柄コードと国コードから企業コードを返す。
+
+        Parameters
+        ----------
+        stock_code: str
+            検索対象となる銘柄コード
+        country_code: str
+            検索対象となる国コード
+        """
+        company_id = self.session.query(Company.company_id).filter(
+                        Company.stock_code == stock_code,
+                        Company.country_code == "JP"
+                     ).one().company_id
+        return company_id
 
 
 if __name__ == '__main__':
