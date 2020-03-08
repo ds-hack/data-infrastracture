@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="dshackdb" schema="public" type="PostgreSQL - 12.1 (Debian 12.1-1.pgdg100+1)">
+   <tables>
+      <table name="company" numRows="0" remarks="企業の主要な情報をマスタとして格納する.&#10;資本金・従業員数等の情報は時系列データなので、別テーブルで扱う" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="company_id" nullable="false" remarks="システム内で設定する企業毎に一意となるコード" size="16" type="varchar" typeCode="12">
+            <child column="company_id" foreignKey="stockprice_company_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="stockprice"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="company_name" nullable="false" remarks="企業名" size="256" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="stock_code" nullable="false" remarks="銘柄コード" size="16" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="listed_market" nullable="false" remarks="上場市場" size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="foundation_date" nullable="true" remarks="設立日(月)" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="5" name="longitude" nullable="true" remarks="本社所在地(経度)" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="6" name="latitude" nullable="true" remarks="本社所在地(緯度)" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="ins_ts" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="upd_ts" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="company_id" sequenceNumberInPK="1"/>
+         <index name="company_pkey" unique="true">
+            <column ascending="true" name="company_id"/>
+         </index>
+      </table>
+      <table name="stockprice" numRows="0" remarks="企業毎の日毎の株価(始値・高値・安値・終値)・出来高を格納する" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="company_id" nullable="false" remarks="システム内で設定する企業毎に一意となるコード" size="16" type="varchar" typeCode="12">
+            <parent column="company_id" foreignKey="stockprice_company_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="company"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="date" nullable="false" remarks="日付" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="2" name="open_price" nullable="true" remarks="株価(始値)" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="3" name="high_price" nullable="true" remarks="株価(高値)" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="4" name="low_price" nullable="true" remarks="株価(安値)" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="5" name="close_price" nullable="true" remarks="株価(終値)" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="6" name="volume" nullable="true" remarks="出来高" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="ins_ts" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="upd_ts" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="company_id" sequenceNumberInPK="1"/>
+         <primaryKey column="date" sequenceNumberInPK="2"/>
+         <index name="stockprice_pkey" unique="true">
+            <column ascending="true" name="company_id"/>
+            <column ascending="true" name="date"/>
+         </index>
+      </table>
+   </tables>
+</database>
