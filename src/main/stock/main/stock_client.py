@@ -4,9 +4,9 @@ import pathlib
 from logging import Logger
 from sqlalchemy.orm import Session
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
-    str(pathlib.Path(__file__).resolve().parent.parent.parent), 'main'))
+    str(pathlib.Path(__file__).resolve().parent.parent.parent)))
 from common.db.base_engine import BaseEngine  # noqa: #402
 from common.db.common_dao import CommonDao  # noqa: #402
 from common.logger.common_logger import CommonLogger  # noqa: #402
@@ -52,6 +52,7 @@ class StockClient(object):
             stock_factory.get_stock_crawler(),
         )
         for stock_code in stock_codes:
+            self.logger.info(f'Fetch StockCode:{stock_code} prices')
             company_id = self.get_company_id(stock_code, 'JP')
             stock_price_dtos = stock_manager.get_incremental_stock_price(
                 stock_code,
@@ -99,3 +100,5 @@ if __name__ == '__main__':
 
     stock_client = StockClient(session, logger)
     stock_client.update_jp_stock_prices()
+
+    session.commit()

@@ -23,8 +23,8 @@ pyvenv.cfg
 __pycache__/
 .pytest_cache/
 
-# DB dump file
-*.sql
+# DB buckup
+dbdump
 
 # schemaspy output
 schema/

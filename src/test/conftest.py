@@ -4,7 +4,7 @@ import sys
 import pathlib
 import pandas as pd
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
     str(pathlib.Path(__file__).resolve().parent.parent), 'main'))
 from common.logger.common_logger import CommonLogger  # noqa: #402

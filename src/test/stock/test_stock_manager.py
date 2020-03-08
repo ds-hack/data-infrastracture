@@ -5,7 +5,7 @@ import datetime
 import pytest
 import pandas as pd
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
     str(pathlib.Path(__file__).resolve().parent.parent.parent), 'main'))
 from stock.dto.stock_dto import StockPrice  # noqa: #402
@@ -57,7 +57,12 @@ class TestStockManager():
             stock_code='6028',
             company_id='0001',
         )
+        stock_price_dtos_not_exist = stock_manager.get_incremental_stock_price(
+            stock_code='NotExistCode',
+            company_id='0001',
+        )
         assert len(stock_price_dtos) >= 1
+        assert stock_price_dtos_not_exist is None
 
     @pytest.mark.parametrize('company_id, expected_date',
                              [('0001', datetime.date(2020, 2, 28)),

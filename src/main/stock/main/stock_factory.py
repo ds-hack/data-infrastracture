@@ -4,9 +4,9 @@ import pathlib
 from typing import List
 from sqlalchemy.orm import Session
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
-    str(pathlib.Path(__file__).resolve().parent.parent.parent), 'main'))
+    str(pathlib.Path(__file__).resolve().parent.parent.parent)))
 from stock.dto.stock_dto import Company  # noqa: #402
 from stock.main.stock_api import StooqAPI  # noqa: #402
 from stock.main.stock_crawler import KabutanCrawler  # noqa: #402

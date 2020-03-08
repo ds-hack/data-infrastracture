@@ -7,9 +7,9 @@ from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
-    str(pathlib.Path(__file__).resolve().parent.parent.parent), 'main'))
+    str(pathlib.Path(__file__).resolve().parent.parent.parent)))
 from stock.dto.stock_dto import StockPrice  # noqa: #402
 
 
@@ -80,8 +80,7 @@ class StockManager(object):
         stock_price_dtos: List[StockPrice]
             StockpriceテーブルのDtoのリスト
         """
-        recent_date = self._get_recent_date(company_id) +\
-            datetime.timedelta(days=1)
+        recent_date = self._get_recent_date(company_id)
         # 最新データが金曜日且つ、直近2日間以内のデータの場合、処理しない(Noneを返す)
         if (recent_date is not None) and \
            (recent_date.weekday() == 4) and \
@@ -98,12 +97,14 @@ class StockManager(object):
         else:
             stock_df = self.stock_api.get_stock_price(
                 stock_code,
-                recent_date + datetime.timedelta(days=1),
+                recent_date,
             )
         if (stock_df is not None) and (len(stock_df) >= 1):
             # 取得したDataFrameにcompany_idのカラムを追加する
             stock_df['company_id'] = company_id
             stock_price_dtos = self._convert_stock_dtos(stock_df)
+        else:
+            stock_price_dtos = None
         return stock_price_dtos
 
     def _get_recent_date(

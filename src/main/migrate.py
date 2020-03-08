@@ -3,7 +3,7 @@ import sys
 import pathlib
 from sqlalchemy.exc import ProgrammingError
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(str(pathlib.Path(__file__).resolve().parent))
 from common.db.base_engine import BaseEngine  # noqa: #402
 from common.logger.common_logger import CommonLogger  # noqa: #402

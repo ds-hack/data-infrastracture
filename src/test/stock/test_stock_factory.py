@@ -3,7 +3,7 @@ import sys
 import pathlib
 import pytest
 
-# srcフォルダパスを追加し、srcフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
+# src/mainフォルダパスを追加し、src/mainフォルダ起点でインポートする(#402 Lint Error抑制と合わせて使用)
 sys.path.append(os.path.join(
     str(pathlib.Path(__file__).resolve().parent.parent.parent), 'main'))
 from stock.main.stock_factory import JpStockFactory  # noqa: #402
