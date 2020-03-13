@@ -10,7 +10,6 @@ from common.logger.common_logger import CommonLogger  # noqa: #402
 from stock.dto.stock_dto import Base, Company, StockPrice  # noqa: #402
 
 logger = CommonLogger().get_application_logger(
-    os.environ['APPLICATION_LOG_PATH'],
     __name__,
 )
 

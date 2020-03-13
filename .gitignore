@@ -1,6 +1,7 @@
 # Secret files
-dshack-secret.yaml
+secret.yaml
 schemaspy.sh
+temp_manifest/
 
 # package and virtual environments(venv)
 /bin

@@ -49,7 +49,6 @@ def application_logger():
     アプリケーション内で共有するロガー。環境変数から出力パスを渡す。
     """
     logger = CommonLogger().get_application_logger(
-        os.environ['APPLICATION_LOG_PATH'],
         __name__,
     )
     return logger

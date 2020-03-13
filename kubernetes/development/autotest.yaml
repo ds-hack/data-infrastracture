@@ -1,0 +1,49 @@
+# Skaffold(https://skaffold.dev/)を利用して自動テストを行う.
+# TODO: ローカルのminikube等で実行できるように、リソース管理する
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: dshack-development
+  name: autotest-configmap
+  labels:
+    env: dev
+data:
+  POSTGRES_HOST: postgres-test-sts-0.postgres-test-svc.dshack-development.svc.cluster.local
+  POSTGRES_PORT: "5432"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: dshack-development
+  name: autotest-job
+  labels:
+    env: dev
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: autotest-job
+        image: dshacks/autotest-job
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: dbname
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: password
+        envFrom:
+          - configMapRef:
+              name: autotest-configmap
+      restartPolicy: Never

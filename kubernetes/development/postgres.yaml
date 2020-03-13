@@ -1,0 +1,221 @@
+# PostgreSQL
+# development環境では利便性のため、2つのサービスを利用する
+# - Headless Service: StatefulSetと併用することで、常にPod名を使った名前解決によりクラスター内でDBに接続できる。
+# - NodePort Service: 開発段階では手元のSQLクライアント等から接続できるように、クラスター外部から接続するためのhostとportを提供する。
+# TODO: 将来的にはCrunchy Data PostgreSQL Operatorなどを利用してスケールアウトする。NoSQLを採用する可能性も有。
+# https://access.crunchydata.com/documentation/postgres-operator/4.2.2/
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-development
+  name: postgres-svc
+  labels:
+    app: postgres-sts
+    env: dev
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: postgres-sts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-development
+  name: postgres-node-svc
+  labels:
+    app: postgres-sts
+    env: dev
+spec:
+  type: NodePort
+  ports:
+  - port: 5432
+    nodePort: 30010
+  selector:
+    app: postgres-sts
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dshack-development
+  name: postgres-sts
+  labels:
+    env: dev
+spec:
+  serviceName: postgres-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-sts
+  template:
+    metadata:
+      labels:
+        app: postgres-sts
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:12.1
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: dbname
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: postgres-pvc
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+  # minikube環境ではhostpath, GKE環境ではgce-pd(GCE PersistentDisk)がデフォルトのストレージクラス
+  # ストレージクラスはDynamic Provisioningによって、Persistent Volumeを要求する際に、どういったディスクが欲しいのか
+  # 指定するために使用される。defaultはHDDのため、SSDが必要な場合はStorageClassを追加する必要がある
+  # ・・・ kubectl get sc -o yaml 等のコマンドで確認可能
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 2Gi
+---
+# PostgreSQL テスト用DB
+# development環境とstaging環境のCI/CDにおいて、テスト用のDBは分離する
+# 環境と用途で下記の5種類に分類できる
+# - development環境 運用DB (ローカルでも最小構成でシステムを動作させる)
+# - development環境 テスト用DB
+# - staging環境 運用DB
+# - staging環境 テスト用DB
+# - production環境 運用DB
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-development
+  name: postgres-test-svc
+  labels:
+    app: postgres-test-sts
+    env: dev
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: postgres-test-sts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dshack-development
+  name: postgres-test-node-svc
+  labels:
+    app: postgres-test-sts
+    env: dev
+spec:
+  type: NodePort
+  ports:
+  - port: 5432
+    nodePort: 30011
+  selector:
+    app: postgres-test-sts
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dshack-development
+  name: postgres-test-sts
+  labels:
+    env: dev
+spec:
+  serviceName: postgres-test-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-test-sts
+  template:
+    metadata:
+      labels:
+        app: postgres-test-sts
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:12.1
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: dbname
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: password
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: postgres-test-pvc
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-test-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 0.5Gi

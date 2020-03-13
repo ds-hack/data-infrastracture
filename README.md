@@ -225,13 +225,7 @@ pg_logical_restore:
 
 ## ロギング環境
 
-Fluend + kibana + ElasticSearchのロギング環境を`kubernetes/dshack-logging.yaml`に追加したが、PCスペック的に厳しいのでSkaffold.yamlの自動デプロイ対象外とし、ローカル開発では使用しないことに決定した。
-
-ロギングには`./src/main/common/logger/common_logger.py`に含まれるCommonloggerクラスを使用する。
-
-環境変数`APPLICATION_LOG_PATH`にログ出力フォルダを指定して実行する。
-
-他にもプログラム中で使用するDB接続情報などは環境変数で与えるため、`.env`内に記載している環境変数を読み込んでプログラムを実行できる`forego`等のツールがローカル開発では便利。
+ログは基本的には各コンテナの標準出力に出力し、fluentdにより集約することでモニタリング・分析する。環境構築後、詳細を記載。
 
 ```bash
 brew install forego

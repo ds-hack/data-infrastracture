@@ -94,7 +94,6 @@ if __name__ == '__main__':
     ).get_session()
 
     logger = CommonLogger().get_application_logger(
-        os.environ['APPLICATION_LOG_PATH'],
         __name__,
     )
 

@@ -1,18 +1,18 @@
-import os
+import sys
 import logging
-from datetime import date
 
 
 class CommonLogger(object):
     """
     アプリケーション全体で共通のログ形式を適用するため、ロガーを提供するクラス
+
+    ログはコンテナの標準出力に出力してfluentd等のagentにより集約することで、モニタリング・分析する。
     """
     def __init__(self):
         pass
 
     def get_application_logger(
         self,
-        log_dir: str,
         mod_name: str,
         log_level: str = 'INFO',
     ):
@@ -36,21 +36,12 @@ class CommonLogger(object):
             アプリケーションで使用するロガー
             例) logger.warn('some log')
         """
-        # ディレクトリが存在しない場合、作成する
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-        log_name = f'application_log_{date.today().strftime("%Y%m%d")}.log'
-        log_path = os.path.join(log_dir, log_name)
-
         logger = logging.getLogger(mod_name)
-        # ファイルハンドラ
-        fh = logging.FileHandler(log_path)
-        # ログフォーマット
+        fh = logging.StreamHandler(sys.stdout)
         log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         formatter = logging.Formatter(log_format)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
-        # ログレベルの設定
         logger.setLevel(log_level)
 
         return logger
