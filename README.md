@@ -17,7 +17,7 @@
 
 ## data-infrastructureリポジトリフォルダ構成
 
-本リポジトリでは定期的に実行するバッチ処理がメインであり、プロセス毎にk8sJobまたはCronJobリソースを作成する。
+本リポジトリでは定期的に実行するバッチ処理がメインなので、扱うk8sリソースはJobまたはCronJobがメインです。
 
 ```tree
 ├── Dockerfile : ETLジョブやユニットテストを実行するためのDockerfile
@@ -149,3 +149,8 @@ DBのドキュメンテーションに役立つ[SchemaSpy](http://schemaspy.org/
 
 [Github Pages(プロジェクトサイト)](https://ds-hack.github.io/data-infrastracture/index.html)で公開しています。
 
+## システム構想・アーキテクチャ・コーディングスタイルなど
+
+[プロジェクトWiki](https://github.com/ds-hack/data-infrastracture/wiki)に随時まとめていきます。
+
+個人ブログ[DS Hack](https://datascientist-toolbox.com/)でも紹介予定です。
