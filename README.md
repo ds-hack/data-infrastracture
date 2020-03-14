@@ -8,7 +8,7 @@
 
 ## プロジェクトリポジトリ
 
-- data-infrastructure(Python) : Web APIやクローリングによる分析用データベースの構築
+- **data-infrastructure(Python)** : Web APIやクローリングによる分析用データベースの構築
 - stochastic-modeling(Python) : データハンドリング、特徴量作成・モデリングを行い、株価予測モデルを構築
 - stock-prediction-api(Go) : 株価予測ダッシュボードで利用するRestful APIのバックエンド実装
 - stock-prediction-dashboard(TypeScript) : 株価予測ダッシュボードのフロントエンド実装
