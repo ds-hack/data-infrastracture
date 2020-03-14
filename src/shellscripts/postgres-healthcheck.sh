@@ -4,7 +4,7 @@ while :
 do
   /bin/ping $POSTGRES_HOST -w1 -c1 &> /dev/null
   if [ $? = 0 ]; then
-    echo "DB Connection OK. Autotest will start after 10 seconds."
+    echo "DB Connection OK. Job process will start after 10 seconds."
     sleep 10
     break
   else

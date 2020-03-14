@@ -9,4 +9,38 @@ build:
 deploy:
   kubectl:
     manifests:
-    - ./kubernetes/development/*
+    - ./kubernetes/development/postgres.yaml
+    - ./kubernetes/development/secret.yaml
+    - ./kubernetes/development/cronjob.yaml
+profiles:
+# skaffold run -p migrate
+# 新規DTOを追加した際に、development環境の全DBに対応するテーブルを作成する
+- name: migrate
+  deploy:
+    kubectl:
+      manifests:
+      - ./kubernetes/development/postgres.yaml
+      - ./kubernetes/development/secret.yaml
+      - ./kubernetes/development/migration.yaml
+# skaffold dev -p sync-test
+# ファイルの保存と同期して、pytestによる自動ユニットテストを実施する
+- name: sync-test
+  deploy:
+    kubectl:
+      manifests:
+      - ./kubernetes/development/postgres.yaml
+      - ./kubernetes/development/secret.yaml
+      - ./kubernetes/development/autotest.yaml
+# skaffold run -p staging
+- name: staging
+  deploy:
+    kubectl:
+      manifests:
+      - ./kubernetes/staging/*
+# skaffold run -p production
+- name: production
+  deploy:
+    kubectl:
+      manifests:
+      - ./kubernetes/production/*
+

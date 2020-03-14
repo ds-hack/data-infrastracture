@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: dshack-development
+  name: migration-job
+  labels:
+    env: dev
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: dshack-dw-job
+        image: dshacks/dshack-dw-job
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: dbname
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: POSTGRES_HOST
+          value: postgres-sts-0.postgres-svc.dshack-development.svc.cluster.local
+        - name: POSTGRES_PORT
+          value: "5432"
+        command: ["bash"]
+        args: ["./src/shellscripts/postgres-migrate.sh"]
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: dshack-development
+  name: migration-testdb-job
+  labels:
+    env: dev
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: dshack-dw-job
+        image: dshacks/dshack-dw-job
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: dbname
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-test-secret
+              key: password
+        - name: POSTGRES_HOST
+          value: postgres-test-sts-0.postgres-test-svc.dshack-development.svc.cluster.local
+        - name: POSTGRES_PORT
+          value: "5432"
+        command: ["bash"]
+        args: ["./src/shellscripts/postgres-migrate.sh"]
+      restartPolicy: Never

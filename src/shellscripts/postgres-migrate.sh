@@ -1,2 +1,2 @@
 bash ./src/shellscripts/postgres-healthcheck.sh
-poetry run ./src/main/migrate.py
+poetry run python ./src/main/migrate.py

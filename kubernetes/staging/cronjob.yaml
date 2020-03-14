@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: dshack-staging
+  name: stock-cronjob-configmap
+  labels:
+    env: stg
+data:
+  POSTGRES_HOST: postgres-sts-0.postgres-svc.dshack-staging.svc.cluster.local
+  POSTGRES_PORT: "5432"
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  namespace: dshack-staging
+  name: stock-cronjob
+  labels:
+    env: stg
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Allow
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  suspend: false
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 1
+      template:
+        spec:
+          containers:
+          - name: dshack-dw-job
+            image: dshacks/dshack-dw-job
+            env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: dbname
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            envFrom:
+              - configMapRef:
+                  name: stock-cronjob-configmap
+            command: ["bash"]
+            args: ["./src/shellscripts/get-stock-prices.sh"]
+          restartPolicy: Never

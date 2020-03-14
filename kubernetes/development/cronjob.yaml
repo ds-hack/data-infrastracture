@@ -1,0 +1,51 @@
+# staging環境・production環境では定期実行のバッチ処理はCronjobとして追加するが、
+# development環境では即座に動作確認したいのでJobとして実行する
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: dshack-development
+  name: stock-cronjob-configmap
+  labels:
+    env: dev
+data:
+  POSTGRES_HOST: postgres-sts-0.postgres-svc.dshack-development.svc.cluster.local
+  POSTGRES_PORT: "5432"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: dshack-development
+  name: stock-cronjob
+  labels:
+    env: dev
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: dshack-dw-job
+        image: dshacks/dshack-dw-job
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: dbname
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        envFrom:
+          - configMapRef:
+              name: stock-cronjob-configmap
+        command: ["bash"]
+        args: ["./src/shellscripts/get-stock-prices.sh"]
+      restartPolicy: Never
