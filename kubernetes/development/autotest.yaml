@@ -25,8 +25,8 @@ spec:
   template:
     spec:
       containers:
-      - name: autotest-job
-        image: dshacks/autotest-job
+      - name: dshack-dw-job
+        image: dshacks/dshack-dw-job
         env:
         - name: POSTGRES_DB
           valueFrom:
@@ -46,4 +46,6 @@ spec:
         envFrom:
           - configMapRef:
               name: autotest-configmap
+        command: ["bash"]
+        args: ["./src/shellscripts/autotest.sh"]
       restartPolicy: Never

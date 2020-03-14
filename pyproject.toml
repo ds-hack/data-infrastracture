@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "data_infrastructure"
+version = "0.1.0"
+description = ""
+authors = ["dshack"]
+
+[tool.poetry.dependencies]
+python = "3.7.6"
+sqlalchemy = "^1.3.15"
+pandas = "^1.0.1"
+psycopg2-binary = "^2.8.4"
+beautifulsoup4 = "^4.8.2"
+pandas_datareader = "^0.8.1"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.7.9"
+autopep8 = "^1.5"
+isort = "^4.3.21"
+jupyter = "^1.0.0"
+pytest = "^5.4.1"
+pytest-cov = "^2.8.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
