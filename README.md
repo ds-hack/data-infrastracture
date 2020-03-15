@@ -114,7 +114,7 @@ Pythonのバージョンは3.7.6を利用します。
 
 DBの認証情報など、秘匿情報はマニフェストファイル(secret.yaml)により管理しています。
 
-[secret.yamlテンプレート](https://github.com/ds-hack/data-infrastracture/blob/master/kubernetes/development/secret.yaml.tmpl)に従って、DB名・ユーザー名・パスワードを設定しましょう。
+[secret.yamlテンプレート](https://github.com/ds-hack/data-infrastructure/blob/master/kubernetes/development/secret.yaml.tmpl)に従って、DB名・ユーザー名・パスワードを設定しましょう。
 
 Kubernetes Secretには、そのままの文字列ではなくbase64エンコーディングで加工後の文字列を格納します。
 
@@ -147,10 +147,10 @@ skaffoldはコンテナのビルド・タグ付け・デプロイのパイプラ
 
 DBのドキュメンテーションに役立つ[SchemaSpy](http://schemaspy.org/)を活用しています。
 
-[Github Pages(プロジェクトサイト)](https://ds-hack.github.io/data-infrastracture/index.html)で公開しています。
+[Github Pages(プロジェクトサイト)](https://ds-hack.github.io/data-infrastructure/index.html)で公開しています。
 
 ## システム構想・アーキテクチャ・コーディングスタイルなど
 
-[プロジェクトWiki](https://github.com/ds-hack/data-infrastracture/wiki)に随時まとめていきます。
+[プロジェクトWiki](https://github.com/ds-hack/data-infrastructure/wiki)に随時まとめていきます。
 
 個人ブログ[DS Hack](https://datascientist-toolbox.com/)でも紹介予定です。
