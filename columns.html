@@ -109,26 +109,26 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "company_name",
-        "type": "varchar",
-        "length": 256,
-        "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>企業名<\/p>"
-    },
-    {
-        "tableName": "stockprice",
-        "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "low_price",
+        "name": "latitude",
         "type": "float8",
         "length": 17,
         "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>株価(安値)<\/p>"
+        "comments": "<p>本社所在地(緯度)<\/p>"
+    },
+    {
+        "tableName": "company",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "foundation_date",
+        "type": "timestamp without time zone",
+        "length": 29,
+        "nullable": "√",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>設立日(月)<\/p>"
     },
     {
         "tableName": "stockprice",
@@ -148,26 +148,26 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "stock_code",
+        "name": "country_code",
         "type": "varchar",
         "length": 16,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>銘柄コード<\/p>"
+        "comments": "<p>国コード<\/p>"
     },
     {
         "tableName": "company",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "longitude",
-        "type": "float8",
-        "length": 17,
-        "nullable": "√",
+        "name": "company_name",
+        "type": "varchar",
+        "length": 256,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>本社所在地(経度)<\/p>"
+        "comments": "<p>企業名<\/p>"
     },
     {
         "tableName": "stockprice",
@@ -175,7 +175,7 @@
         "keyClass": "",
         "keyTitle": "",
         "name": "ins_ts",
-        "type": "timestamp",
+        "type": "timestamp without time zone",
         "length": 29,
         "nullable": "√",
         "autoUpdated": "",
@@ -183,17 +183,17 @@
         "comments": ""
     },
     {
-        "tableName": "company",
+        "tableName": "stockprice",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "upd_ts",
-        "type": "timestamp",
-        "length": 29,
-        "nullable": "√",
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>company_id",
+        "type": "varchar",
+        "length": 16,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": ""
+        "comments": "<p>システム内で設定する企業毎に一意となるコード<\/p>"
     },
     {
         "tableName": "stockprice",
@@ -209,95 +209,17 @@
         "comments": "<p>出来高<\/p>"
     },
     {
-        "tableName": "stockprice",
+        "tableName": "company",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "high_price",
-        "type": "float8",
-        "length": 17,
-        "nullable": "√",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>株価(高値)<\/p>"
-    },
-    {
-        "tableName": "company",
-        "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>company_id",
+        "name": "listed_market",
         "type": "varchar",
-        "length": 16,
+        "length": 32,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>システム内で設定する企業毎に一意となるコード<\/p>"
-    },
-    {
-        "tableName": "stockprice",
-        "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>date",
-        "type": "date",
-        "length": 13,
-        "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>日付<\/p>"
-    },
-    {
-        "tableName": "stockprice",
-        "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>company_id",
-        "type": "varchar",
-        "length": 16,
-        "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>システム内で設定する企業毎に一意となるコード<\/p>"
-    },
-    {
-        "tableName": "stockprice",
-        "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "upd_ts",
-        "type": "timestamp",
-        "length": 29,
-        "nullable": "√",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": ""
-    },
-    {
-        "tableName": "company",
-        "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "foundation_date",
-        "type": "timestamp",
-        "length": 29,
-        "nullable": "√",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>設立日(月)<\/p>"
-    },
-    {
-        "tableName": "company",
-        "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "latitude",
-        "type": "float8",
-        "length": 17,
-        "nullable": "√",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>本社所在地(緯度)<\/p>"
+        "comments": "<p>上場市場<\/p>"
     },
     {
         "tableName": "stockprice",
@@ -317,8 +239,8 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "ins_ts",
-        "type": "timestamp",
+        "name": "upd_ts",
+        "type": "timestamp without time zone",
         "length": 29,
         "nullable": "√",
         "autoUpdated": "",
@@ -326,17 +248,108 @@
         "comments": ""
     },
     {
+        "tableName": "stockprice",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "high_price",
+        "type": "float8",
+        "length": 17,
+        "nullable": "√",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>株価(高値)<\/p>"
+    },
+    {
         "tableName": "company",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "listed_market",
-        "type": "varchar",
-        "length": 32,
+        "name": "longitude",
+        "type": "float8",
+        "length": 17,
+        "nullable": "√",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>本社所在地(経度)<\/p>"
+    },
+    {
+        "tableName": "company",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "ins_ts",
+        "type": "timestamp without time zone",
+        "length": 29,
+        "nullable": "√",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": ""
+    },
+    {
+        "tableName": "stockprice",
+        "tableType": "Table",
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>date",
+        "type": "date",
+        "length": 13,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>上場市場<\/p>"
+        "comments": "<p>日付<\/p>"
+    },
+    {
+        "tableName": "company",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "stock_code",
+        "type": "varchar",
+        "length": 16,
+        "nullable": "",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>銘柄コード<\/p>"
+    },
+    {
+        "tableName": "stockprice",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "low_price",
+        "type": "float8",
+        "length": 17,
+        "nullable": "√",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>株価(安値)<\/p>"
+    },
+    {
+        "tableName": "company",
+        "tableType": "Table",
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>company_id",
+        "type": "varchar",
+        "length": 16,
+        "nullable": "",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>システム内で設定する企業毎に一意となるコード<\/p>"
+    },
+    {
+        "tableName": "stockprice",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "upd_ts",
+        "type": "timestamp without time zone",
+        "length": 29,
+        "nullable": "√",
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": ""
     }
 ];
                     var config = {
@@ -351,7 +364,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.1-SNAPSHOT</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>
