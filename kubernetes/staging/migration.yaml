@@ -34,6 +34,8 @@ spec:
           value: postgres-sts-0.postgres-svc.dshack-staging.svc.cluster.local
         - name: POSTGRES_PORT
           value: "5432"
+        - name: INSERT_MASTER_DATA
+          value: "true"
         command: ["bash"]
         args: ["./src/shellscripts/postgres-migrate.sh"]
       restartPolicy: Never
@@ -74,6 +76,8 @@ spec:
           value: postgres-test-sts-0.postgres-test-svc.dshack-staging.svc.cluster.local
         - name: POSTGRES_PORT
           value: "5432"
+        - name: INSERT_MASTER_DATA
+          value: "false"
         command: ["bash"]
         args: ["./src/shellscripts/postgres-migrate.sh"]
       restartPolicy: Never
