@@ -4,8 +4,6 @@
 
 **株価予測ダッシュボード**の構築という具体的なサンプルをもとに、分析用データベースの構築・データハンドリング・モデリング・API開発・ダッシュボード開発を行います。
 
-![system architecture](https://user-images.githubusercontent.com/56133802/75120700-c6fee000-56d0-11ea-9aef-3acb68ee168e.png)
-
 ## プロジェクトリポジトリ
 
 - **data-infrastructure(Python)** : Web APIやクローリングによる分析用データベースの構築
@@ -14,6 +12,8 @@
 - stock-prediction-dashboard(TypeScript) : 株価予測ダッシュボードのフロントエンド実装
 
 ( )内は、主要な開発言語
+
+![architecture](https://user-images.githubusercontent.com/56133802/76705546-2e361000-6724-11ea-83b7-664ca29465de.png)
 
 ## data-infrastructureリポジトリフォルダ構成
 
