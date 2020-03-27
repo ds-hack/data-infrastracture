@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: dshack-dw-job
-        image: dshacks/dshack-dw-job
+        image: dshacks/dshack-dw-job-development
         env:
         - name: POSTGRES_DB
           valueFrom:
