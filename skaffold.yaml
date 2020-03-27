@@ -4,7 +4,7 @@ metadata:
   name: data-infrastructure
 build:
   artifacts:
-  - image: dshacks/dshack-dw-job
+  - image: dshacks/dshack-dw-job-development
     context: .
 deploy:
   kubectl:
@@ -33,12 +33,20 @@ profiles:
       - ./kubernetes/development/autotest.yaml
 # skaffold run -p staging
 - name: staging
+  build:
+    artifacts:
+    - image: dshacks/dshack-dw-job-staging
+      context: .
   deploy:
     kubectl:
       manifests:
       - ./kubernetes/staging/*
 # skaffold run -p production
 - name: production
+  build:
+    artifacts:
+    - image: dshacks/dshack-dw-job-production
+      context: .
   deploy:
     kubectl:
       manifests:
