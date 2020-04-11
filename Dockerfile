@@ -12,4 +12,6 @@ RUN poetry config virtualenvs.create false \
 # 不要になったら削除
 RUN apt-get update && apt-get install -y iputils-ping
 
+COPY alembic.ini ./
+COPY alembic/ ./alembic
 COPY src/ ./src

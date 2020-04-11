@@ -21,9 +21,13 @@
 
 ```tree
 ├── Dockerfile : ETLジョブやユニットテストを実行するためのDockerfile
+├── alembic.ini : データベースマイグレーションパッケージalembicの設定ファイル
 ├── poetry.lock : パッケージの依存関係が記載されたlockファイル
 ├── pyproject.toml : パッケージのメタ情報・必要パッケージ等を含むファイル
 ├── skaffold.yaml : k8sのCI/CDツールとしてのskaffoldの設定ファイル
+├── alembic
+│   ├── env.py : alembic環境設定ファイル
+│   └── versions : マイグレーションファイル本体
 ├── kubernetes
 │   ├── cluster : clusterレベルのk8smanifestファイル(RBACやロギング関連)
 │   ├── development : development環境用のk8smanifestファイル
@@ -34,15 +38,16 @@
     │   ├── common
     │   │   ├── db : DB関連の共通処理
     │   │   └── logger : アプリケーション全体で使用するロガー
-    │   ├── migrate.py : DTOクラスからテーブルを作成するためのファイル
     │   └── stock : 株価取得ロジック
+    │       ├── dto : SQL AlchemyのDTO
+    │       └── main : 株価取得ロジックアプリケーション本体
     ├── shellscripts : バッチ処理や自動テストを行うシェルスクリプト(k8sのJob・CronJobで実行される)
     └── test
-        ├── common : アプリケーション共通処理のユニットテスト 
+        ├── common : アプリケーション共通処理のユニットテスト
         ├── conftest.py : ユニットテスト全体で利用されるfixture等が定義されたファイル
         ├── pytest.ini : pytestの設定
         ├── resources : テスト用データ
-        └── stock : 株価取得ロジックのユニットテスト 
+        └── stock : 株価取得ロジックのユニットテスト
 ```
 
 ## Quick Start

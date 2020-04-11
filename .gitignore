@@ -2,6 +2,7 @@
 secret.yaml
 schemaspy.properties
 temp_manifest/
+.env
 
 # vscode setting
 /.vscode

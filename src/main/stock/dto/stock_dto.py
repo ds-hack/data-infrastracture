@@ -1,14 +1,14 @@
 from sqlalchemy import Column, String, Date, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-import datetime
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
 
 class Company(Base):
     """
-    CompanyテーブルのDto
+    companyテーブルのDto
     """
     __tablename__ = 'company'
     __table_args__ = {
@@ -25,16 +25,17 @@ class Company(Base):
     foundation_date = Column(DateTime, comment='設立日(月)')
     longitude = Column(Float, comment='本社所在地(経度)')
     latitude = Column(Float, comment='本社所在地(緯度)')
-    ins_ts = Column(DateTime, default=datetime.datetime.now())
-    upd_ts = Column(DateTime, default=datetime.datetime.now())
+    ins_ts = Column(DateTime, server_default=func.now())
+    upd_ts = Column(DateTime, server_default=func.now())
 
     # 外部キー制約 (one-to-many)
     stockprices = relationship('StockPrice')
+    stockprices_ma = relationship('StockPriceMA')
 
 
 class StockPrice(Base):
     """
-    StockPriceテーブルのDto
+    stockpriceテーブルのDto
     """
     __tablename__ = 'stockprice'
     __table_args__ = {
@@ -50,5 +51,25 @@ class StockPrice(Base):
     low_price = Column(Float, comment='株価(安値)')
     close_price = Column(Float, comment='株価(終値)')
     volume = Column(Float, comment='出来高')
-    ins_ts = Column(DateTime, default=datetime.datetime.now())
-    upd_ts = Column(DateTime, default=datetime.datetime.now())
+    ins_ts = Column(DateTime, server_default=func.now())
+    upd_ts = Column(DateTime, server_default=func.now())
+
+
+class StockPriceMA(Base):
+    """
+    stockprice_maテーブルのDto
+    """
+    __tablename__ = 'stockprice_ma'
+    __table_args__ = {
+        'comment': '企業毎の日次の移動平均株価(SMA・EMA・WMA)を格納する'
+    }
+
+    company_id = Column(String(16), ForeignKey('company.company_id'),
+                        primary_key=True,
+                        comment='システム内で設定する企業毎に一意となるコード')
+    date = Column(Date, primary_key=True, comment='日付')
+    ma_type = Column(String(16), primary_key=True,
+                     comment='移動平均の計算条件(ex. sma5, ema25, ...)')
+    ma_value = Column('ma_value', Float, comment='ma_typeの条件下の移動平均株価')
+    ins_ts = Column(DateTime, server_default=func.now())
+    upd_ts = Column(DateTime, server_default=func.now())
