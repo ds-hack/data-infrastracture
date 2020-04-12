@@ -151,7 +151,7 @@ class EMACalculator(object):
         lalias = aliased(ema, name="l")
         ralias = aliased(stockprice, name="r")
         ema = ema.union_all(
-            # 再起項(1日ずつJOINして再帰的にEMAを計算)
+            # 再起項(1日ずつJOINして再帰的にEMAを計算: alpha * 当日の終値 + (1 - alpha) * 前日のEMA)
             self.session.query(
                 ralias.c.company_id,
                 ralias.c.date,
@@ -159,7 +159,7 @@ class EMACalculator(object):
                 ralias.c.row_number,
                 ralias.c.close_price,
                 (ralias.c.alpha * ralias.c.close_price +
-                 (1 - ralias.c.alpha) * lalias.c.close_price).label('ema')
+                 (1 - ralias.c.alpha) * lalias.c.ema).label('ema')
             ).join(lalias, and_(
                 lalias.c.company_id == ralias.c.company_id,
                 lalias.c.row_number == ralias.c.row_number - 1)
